@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{145D0ABD-3736-467D-B4F8-8A4842F992DF}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ChillGame.Domain", "src\ChillGame.Domain\ChillGame.Domain.fsproj", "{147B1D16-D58D-4821-9FAD-3BE86FE93444}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{23EBBE45-584D-4146-98C5-5256873D354D}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ChillGame.Domain.Tests", "tests\ChillGame.Domain.Tests\ChillGame.Domain.Tests.fsproj", "{1C5027EF-D3E8-4DEE-82CD-F7290513954A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{147B1D16-D58D-4821-9FAD-3BE86FE93444}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{147B1D16-D58D-4821-9FAD-3BE86FE93444}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{147B1D16-D58D-4821-9FAD-3BE86FE93444}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{147B1D16-D58D-4821-9FAD-3BE86FE93444}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C5027EF-D3E8-4DEE-82CD-F7290513954A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C5027EF-D3E8-4DEE-82CD-F7290513954A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C5027EF-D3E8-4DEE-82CD-F7290513954A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C5027EF-D3E8-4DEE-82CD-F7290513954A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{147B1D16-D58D-4821-9FAD-3BE86FE93444} = {145D0ABD-3736-467D-B4F8-8A4842F992DF}
+		{1C5027EF-D3E8-4DEE-82CD-F7290513954A} = {23EBBE45-584D-4146-98C5-5256873D354D}
+	EndGlobalSection
+EndGlobal

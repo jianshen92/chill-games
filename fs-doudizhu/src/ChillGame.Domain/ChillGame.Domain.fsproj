@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Primitives.fs" />
+    <Compile Include="Cards.fs" />
+    <Compile Include="Rules.fs" />
+    <Compile Include="Combinations.fs" />
+    <Compile Include="Game.fs" />
+  </ItemGroup>
+
+</Project>

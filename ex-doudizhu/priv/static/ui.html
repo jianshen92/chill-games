@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>斗地主 · Doudizhu</title>
+    <link rel="stylesheet" href="/assets/doudizhu.css" />
+    <script type="module" src="/assets/doudizhu.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Doudizhu home">
+        <span class="brand-mark" aria-hidden="true">地</span>
+        <span><strong>斗地主</strong><small>Doudizhu</small></span>
+      </a>
+      <div class="connection">
+        <span id="connection-dot" class="status-dot offline" aria-hidden="true"></span>
+        <span id="connection-label">Offline</span>
+        <button id="reconnect-button" class="button ghost compact" type="button" hidden>Reconnect</button>
+      </div>
+    </header>
+
+    <main>
+      <section id="welcome-panel" class="panel welcome-panel">
+        <div>
+          <p class="eyebrow">Three-player climbing game</p>
+          <h1>Call the landlord.<br />Outplay your friends.</h1>
+          <p class="lede">
+            Create a private table or follow an invitation link. Your hand stays private and every move is
+            validated by the server.
+          </p>
+        </div>
+
+        <form id="welcome-form" class="join-card">
+          <label for="player-name">Your name</label>
+          <input id="player-name" name="name" maxlength="30" autocomplete="nickname" required placeholder="e.g. Alice" />
+          <p id="invitation-note" class="muted" hidden>You have been invited to a private table.</p>
+          <div class="button-row">
+            <button id="create-room-button" class="button primary" type="submit">Create private table</button>
+            <button id="join-room-button" class="button primary" type="submit" hidden>Join table</button>
+            <button id="replay-library-button" class="button secondary" type="button">Replay a game</button>
+          </div>
+          <p id="welcome-error" class="error" role="alert"></p>
+        </form>
+      </section>
+
+      <section id="room-panel" class="panel room-panel" hidden>
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Private table</p>
+            <h2>Waiting room</h2>
+          </div>
+          <span id="room-status" class="pill">Open</span>
+        </div>
+
+        <div id="invitation-card" class="invitation-card" hidden>
+          <div>
+            <span class="muted">Invitation code</span>
+            <strong id="invite-code" class="invite-code"></strong>
+          </div>
+          <button id="copy-invite-button" class="button secondary" type="button">Copy invite link</button>
+        </div>
+
+        <ol id="seat-list" class="seat-list" aria-label="Players"></ol>
+
+        <div class="room-actions">
+          <button id="ready-button" class="button primary" type="button">I’m ready</button>
+          <button id="start-button" class="button accent" type="button" hidden>Start game</button>
+        </div>
+        <p id="room-message" class="muted" role="status"></p>
+      </section>
+
+      <section id="replay-library-panel" class="panel replay-library-panel" hidden>
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Your history</p>
+            <h2>Recorded games</h2>
+          </div>
+          <button id="close-replay-library-button" class="button ghost" type="button">Back</button>
+        </div>
+        <p class="muted replay-intro">Completed replays are rebuilt from the original deal and accepted commands. Enter any public game ID to review all hands, or choose one of your recent games.</p>
+        <form id="replay-id-form" class="replay-id-form">
+          <label for="replay-game-id">Public game ID</label>
+          <div class="button-row">
+            <input id="replay-game-id" autocomplete="off" required placeholder="game_…" />
+            <button class="button accent" type="submit">Open replay</button>
+          </div>
+        </form>
+        <div id="replay-list" class="replay-list"></div>
+        <p id="replay-library-error" class="error" role="alert"></p>
+      </section>
+
+      <section id="game-panel" class="game-layout" hidden>
+        <section class="panel table-panel">
+          <div class="game-header">
+            <div>
+              <p class="eyebrow">Game in progress</p>
+              <h2 id="phase-title">Bidding</h2>
+            </div>
+            <div class="game-meta">
+              <span id="role-pill" class="pill" hidden></span>
+              <span id="version-label" class="muted">Turn 0</span>
+              <button id="resync-button" class="button ghost compact" type="button">Resync</button>
+            </div>
+          </div>
+
+          <div id="replay-controls" class="replay-controls" hidden>
+            <button id="replay-exit-button" class="button ghost compact" type="button">Exit replay</button>
+            <button id="copy-replay-link-button" class="button ghost compact" type="button">Copy link</button>
+            <button id="replay-previous-button" class="button ghost compact" type="button" aria-label="Previous replay frame">←</button>
+            <button id="replay-play-button" class="button accent compact" type="button">Play</button>
+            <button id="replay-next-button" class="button ghost compact" type="button" aria-label="Next replay frame">→</button>
+            <input id="replay-slider" type="range" min="0" max="0" value="0" aria-label="Replay position" />
+            <strong id="replay-position">Step 1 of 1</strong>
+          </div>
+
+          <div id="opponents" class="opponents"></div>
+
+          <section id="replay-hands" class="replay-hands" hidden aria-label="All player hands"></section>
+
+          <div class="table-center">
+            <div id="turn-indicator" class="turn-indicator">Waiting for snapshot…</div>
+            <div id="lead-area" class="lead-area">
+              <span class="muted">Current lead</span>
+              <div id="lead-cards" class="mini-cards"><span class="empty-state">No cards led</span></div>
+              <strong id="lead-description"></strong>
+            </div>
+            <div id="bottom-area" class="bottom-area" hidden>
+              <span class="muted">Bottom cards</span>
+              <div id="bottom-cards" class="mini-cards"></div>
+            </div>
+          </div>
+
+          <div id="hand-heading" class="hand-heading">
+            <div>
+              <span class="muted">Your hand</span>
+              <strong id="hand-count">0 cards</strong>
+            </div>
+            <span id="selection-count" class="muted">0 selected</span>
+          </div>
+          <div id="hand" class="hand" aria-label="Your cards"></div>
+
+          <div id="action-bar" class="action-bar">
+            <div id="bid-controls" class="button-row" hidden>
+              <button class="button bid-button" data-bid="1" type="button">Bid 1</button>
+              <button class="button bid-button" data-bid="2" type="button">Bid 2</button>
+              <button class="button bid-button" data-bid="3" type="button">Bid 3</button>
+              <button id="auction-pass-button" class="button ghost" type="button">Pass</button>
+            </div>
+            <div id="play-controls" class="button-row" hidden>
+              <button id="play-button" class="button accent" type="button" disabled>Play selected</button>
+              <button id="play-pass-button" class="button ghost" type="button">Pass</button>
+              <button id="clear-selection-button" class="button ghost" type="button">Clear</button>
+            </div>
+            <p id="waiting-message" class="muted">Waiting for another player…</p>
+          </div>
+
+          <section id="settlement" class="settlement" hidden>
+            <p class="eyebrow">Game finished</p>
+            <h3 id="winner-title"></h3>
+            <div id="score-list" class="score-list"></div>
+          </section>
+
+          <p id="game-error" class="error centered" role="alert"></p>
+        </section>
+
+        <aside class="panel activity-panel">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Table activity</p>
+              <h2>Game log</h2>
+            </div>
+          </div>
+          <ol id="event-log" class="event-log" aria-live="polite"></ol>
+        </aside>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="status" hidden></div>
+    <noscript>This game requires JavaScript to connect to Phoenix Channels.</noscript>
+  </body>
+</html>

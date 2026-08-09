@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://doudizhu.example/protocol/v1/message.schema.json",
+  "title": "Doudizhu protocol v1 server message",
+  "type": "object",
+  "required": ["protocol_version", "kind"],
+  "properties": {
+    "protocol_version": {"const": 1},
+    "kind": {
+      "enum": ["command_result", "protocol_error", "game_event", "snapshot", "room_snapshot"]
+    },
+    "game_id": {"type": ["string", "null"]},
+    "sequence": {"type": "integer", "minimum": 0},
+    "command_id": {"type": "string"},
+    "status": {"enum": ["accepted", "rejected"]},
+    "game_version": {"type": "integer", "minimum": 0},
+    "error": {
+      "type": "object",
+      "required": ["code"],
+      "properties": {"code": {"type": "string", "minLength": 1}},
+      "additionalProperties": true
+    },
+    "event": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {"type": {"type": "string", "minLength": 1}},
+      "additionalProperties": true
+    },
+    "you": {"type": ["object", "null"]},
+    "game": {"type": "object"},
+    "players": {"type": "array"},
+    "room_id": {"type": "string"},
+    "seats": {"type": "array"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"kind": {"const": "command_result"}}},
+      "then": {"required": ["game_id", "command_id", "status", "game_version"]}
+    },
+    {
+      "if": {"properties": {"kind": {"const": "protocol_error"}}},
+      "then": {"required": ["error"]}
+    },
+    {
+      "if": {"properties": {"kind": {"const": "game_event"}}},
+      "then": {"required": ["game_id", "sequence", "event_index", "event"]}
+    },
+    {
+      "if": {"properties": {"kind": {"const": "snapshot"}}},
+      "then": {"required": ["game_id", "sequence", "you", "game", "players"]}
+    },
+    {
+      "if": {"properties": {"kind": {"const": "room_snapshot"}}},
+      "then": {"required": ["room_id", "status", "seats"]}
+    }
+  ],
+  "additionalProperties": true
+}

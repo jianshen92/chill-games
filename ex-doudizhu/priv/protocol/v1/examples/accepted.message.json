@@ -1,0 +1,8 @@
+{
+  "protocol_version": 1,
+  "kind": "command_result",
+  "game_id": "game-example",
+  "command_id": "command-example-1",
+  "status": "accepted",
+  "game_version": 43
+}

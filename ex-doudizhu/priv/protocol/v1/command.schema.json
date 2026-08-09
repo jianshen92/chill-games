@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://doudizhu.example/protocol/v1/command.schema.json",
+  "title": "Doudizhu protocol v1 command",
+  "type": "object",
+  "required": ["protocol_version", "kind", "game_id", "command_id", "expected_version", "action"],
+  "properties": {
+    "protocol_version": {"const": 1},
+    "kind": {"const": "command"},
+    "game_id": {"type": "string", "minLength": 1},
+    "command_id": {"type": "string", "minLength": 1},
+    "expected_version": {"type": "integer", "minimum": 0},
+    "action": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type", "bid"],
+          "properties": {
+            "type": {"const": "place_bid"},
+            "bid": {"enum": [1, 2, 3]}
+          },
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "required": ["type"],
+          "properties": {"type": {"const": "auction_pass"}},
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "required": ["type", "cards"],
+          "properties": {
+            "type": {"const": "play_cards"},
+            "cards": {
+              "type": "array",
+              "items": {"$ref": "#/definitions/card"}
+            }
+          },
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "required": ["type"],
+          "properties": {"type": {"const": "play_pass"}},
+          "additionalProperties": true
+        }
+      ]
+    }
+  },
+  "definitions": {
+    "card": {
+      "type": "string",
+      "pattern": "^(?:[CDHS](?:3|4|5|6|7|8|9|10|J|Q|K|A|2)|JOKER_(?:SMALL|BIG))$"
+    }
+  },
+  "additionalProperties": true
+}

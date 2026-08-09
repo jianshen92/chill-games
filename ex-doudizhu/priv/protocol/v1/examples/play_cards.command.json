@@ -1,0 +1,11 @@
+{
+  "protocol_version": 1,
+  "kind": "command",
+  "game_id": "game-example",
+  "command_id": "command-example-1",
+  "expected_version": 42,
+  "action": {
+    "type": "play_cards",
+    "cards": ["C3", "D3", "H3", "C4"]
+  }
+}
