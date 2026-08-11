@@ -41,6 +41,8 @@ defmodule Doudizhu.MixProject do
     [
       {:phoenix, "~> 1.8.9"},
       {:phoenix_ecto, "~> 4.5"},
+      {:phoenix_html, "~> 4.1"},
+      {:phoenix_live_view, "~> 1.1"},
       {:ecto_sql, "~> 3.13"},
       {:postgrex, ">= 0.0.0"},
       {:telemetry_metrics, "~> 1.0"},
@@ -50,7 +52,8 @@ defmodule Doudizhu.MixProject do
       {:dns_cluster, "~> 0.2.0"},
       {:bandit, "~> 1.5"},
       {:stream_data, "~> 1.1", only: :test},
-      {:ex_json_schema, "~> 0.11", only: :test}
+      {:ex_json_schema, "~> 0.11", only: :test},
+      {:lazy_html, ">= 0.1.0", only: :test}
     ]
   end
 

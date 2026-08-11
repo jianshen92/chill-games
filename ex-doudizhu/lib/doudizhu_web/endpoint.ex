@@ -8,12 +8,29 @@ defmodule DoudizhuWeb.Endpoint do
     store: :cookie,
     key: "_doudizhu_key",
     signing_salt: "MTjFeQMu",
-    same_site: "Lax"
+    same_site: "Lax",
+    max_age: 31_536_000
   ]
 
   socket "/socket", DoudizhuWeb.UserSocket,
     websocket: true,
     longpoll: false
+
+  socket "/live", Phoenix.LiveView.Socket,
+    websocket: [connect_info: [session: @session_options]],
+    longpoll: false
+
+  plug Plug.Static,
+    at: "/vendor/phoenix",
+    from: :phoenix,
+    gzip: false,
+    only: ~w(phoenix.min.js)
+
+  plug Plug.Static,
+    at: "/vendor/phoenix_live_view",
+    from: :phoenix_live_view,
+    gzip: false,
+    only: ~w(phoenix_live_view.min.js)
 
   # Serve at "/" the static files from "priv/static" directory.
   #

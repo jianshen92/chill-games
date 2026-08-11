@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf-token" content={get_csrf_token()} />
+    <meta name="color-scheme" content="dark" />
+    <.live_title default="斗地主" suffix=" · Doudizhu">
+      {assigns[:page_title]}
+    </.live_title>
+    <link rel="stylesheet" href={~p"/assets/doudizhu.css"} />
+    <script defer src="/vendor/phoenix/phoenix.min.js">
+    </script>
+    <script defer src="/vendor/phoenix_live_view/phoenix_live_view.min.js">
+    </script>
+    <script defer src={~p"/assets/doudizhu_live.js"}>
+    </script>
+  </head>
+  <body>
+    {@inner_content}
+  </body>
+</html>

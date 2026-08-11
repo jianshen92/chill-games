@@ -49,7 +49,7 @@ Open [`http://localhost:4000`](http://localhost:4000), enter your name, and crea
 
 For local testing on one computer, use separate browser profiles/private contexts so each player has separate guest identity storage.
 
-The browser is a vanilla Phoenix Channel client. It submits the same protocol-v1 JSON commands as the CLI and only renders server-projected observations; it does not classify cards or decide whether moves are legal.
+The browser is a Phoenix LiveView adapter over the same application boundary as the Channel and local clients. It constructs the same protocol-v1 command envelopes, dispatches through `CommandGateway`, subscribes to the same audience-specific projections, and does not classify cards or decide whether moves are legal. LiveView owns transient presentation state such as selected cards and replay playback; the durable game remains authoritative.
 
 ### Replaying a recorded game
 
@@ -72,7 +72,7 @@ The task prints three complete commands—one each for Alice, Bob, and Chen. Ope
 ## Architecture
 
 ```text
-JSON command
+protocol-v1 command envelope
   -> Protocol.Decoder
   -> Sessions.CommandGateway
   -> controller lease + authorization
@@ -82,7 +82,7 @@ JSON command
   -> PostgreSQL transaction
   -> public/private projection outbox
   -> PubSub
-  -> LocalSession or Phoenix Channel delivery
+  -> LocalSession, Phoenix Channel, or LiveView delivery
 ```
 
 The domain core under `lib/doudizhu/domain/` performs no I/O, random generation, clock access, process messaging, database access, or Phoenix calls.
@@ -91,10 +91,10 @@ Production randomness lives in `Doudizhu.Games.DeckFactory`; tests inject a comp
 
 ### Shared command semantics
 
-Headless clients, local wire-faithful sessions, and the browser UI all use the same live path:
+Headless clients, local wire-faithful sessions, and the LiveView browser adapter all use the same application path:
 
 ```text
-protocol-v1 JSON
+protocol-v1 command envelope
   -> Protocol.Decoder
   -> Sessions.CommandGateway
   -> Games.GameServer
@@ -253,6 +253,7 @@ mix test
 mix test test/doudizhu/domain
 mix test test/doudizhu/sessions/adapter_parity_test.exs
 mix test test/doudizhu_web/channels
+mix test test/doudizhu_web/game_live_test.exs
 mix precommit
 ```
 
