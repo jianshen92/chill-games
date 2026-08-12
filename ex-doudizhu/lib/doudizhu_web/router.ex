@@ -11,6 +11,7 @@ defmodule DoudizhuWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers, %{"content-security-policy" => @content_security_policy}
     plug DoudizhuWeb.Plugs.EnsureGuestIdentity
+    plug DoudizhuWeb.Plugs.SetLocale
   end
 
   pipeline :api do

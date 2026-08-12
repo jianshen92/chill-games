@@ -6,7 +6,8 @@ defmodule DoudizhuWeb.GameLiveTest do
   alias Doudizhu.Repo
   alias Doudizhu.Rooms.Room
   alias Doudizhu.Sessions.LocalSession
-  alias DoudizhuWeb.SessionToken
+  alias DoudizhuWeb.Gettext, as: GettextBackend
+  alias DoudizhuWeb.{GameLiveHTML, Locale, SessionToken}
 
   import Doudizhu.DomainHelpers
 
@@ -20,6 +21,60 @@ defmodule DoudizhuWeb.GameLiveTest do
     assert html =~ ~s(src="/assets/doudizhu_live.js")
     assert String.starts_with?(get_session(conn, :identity_id), "guest_")
     assert get_resp_header(conn, "content-security-policy") != []
+  end
+
+  test "browser locale is negotiated from the request and stored in the session", %{conn: conn} do
+    conn =
+      conn
+      |> put_req_header("accept-language", "zh-CN,zh;q=0.9,en;q=0.8")
+      |> get(~p"/")
+
+    html = html_response(conn, 200)
+    assert html =~ ~s(<html lang="zh-Hans">)
+    assert html =~ "创建私人牌桌"
+    assert html =~ "回放牌局"
+    assert get_session(conn, :locale) == "zh_Hans"
+  end
+
+  test "LiveView changes locale reactively", %{conn: conn} do
+    conn = init_test_session(conn, %{identity_id: "guest-live-locale", locale: "en"})
+    {:ok, view, _html} = live(conn, ~p"/")
+
+    redirect =
+      view
+      |> form("#locale-form", %{locale: "zh_Hans"})
+      |> render_change()
+
+    assert {:error, {:live_redirect, %{to: "/?locale=zh_Hans"}}} = redirect
+    assert_push_event view, "store-locale", %{locale: "zh_Hans", language_tag: "zh-Hans"}
+    {:ok, view, _html} = follow_redirect(redirect, conn)
+
+    assert has_element?(view, "#welcome-panel", "创建私人牌桌")
+    assert has_element?(view, "#locale-select option[value='zh_Hans'][selected]")
+
+    view
+    |> form("#welcome-form", %{name: "   "})
+    |> render_submit()
+
+    assert has_element?(view, "#welcome-error", "请输入名字以继续。")
+  end
+
+  test "Simplified Chinese translations preserve interpolation and plurals" do
+    Gettext.with_locale(GettextBackend, "zh_Hans", fn ->
+      assert GameLiveHTML.card_count(3) == "3 张牌"
+
+      assert GameLiveHTML.event_description(
+               %{"type" => "bid_placed", "player_id" => "alice", "bid" => 2},
+               [
+                 %{"player_id" => "alice", "name" => "小明"}
+               ]
+             ) == "小明 叫了 2 分。"
+
+      assert Gettext.pgettext(GettextBackend, "readiness status", "Not ready") == "未准备"
+      assert Gettext.pgettext(GettextBackend, "readiness action", "Not ready") == "取消准备"
+      assert Gettext.pgettext(GettextBackend, "replay control", "Play") == "播放"
+      assert Locale.normalize("zh-CN") == "zh_Hans"
+    end)
   end
 
   test "LiveView reactively creates a room and updates readiness", %{conn: conn} do

@@ -7,18 +7,24 @@ defmodule DoudizhuWeb.GameLive do
   alias Doudizhu.Replays
   alias Doudizhu.Rooms
   alias Doudizhu.Sessions.CommandGateway
-  alias DoudizhuWeb.{GameConnection, GameLiveHTML, Presence}
+  alias DoudizhuWeb.Gettext, as: GettextBackend
+  alias DoudizhuWeb.{GameConnection, GameLiveHTML, Locale, Presence}
 
   @impl true
   def render(assigns), do: GameLiveHTML.index(assigns)
 
   @impl true
-  def mount(_params, %{"identity_id" => identity_id}, socket) do
+  def mount(params, %{"identity_id" => identity_id} = session, socket) do
+    locale = Locale.negotiate([params["locale"], session["locale"]])
+    Gettext.put_locale(GettextBackend, locale)
+
     socket =
       socket
       |> assign(
         page_title: nil,
         connected: connected?(socket),
+        locale: locale,
+        language_tag: Locale.language_tag(locale),
         identity_id: identity_id,
         connection_session_id: random_id("live"),
         mode: :welcome,
@@ -50,23 +56,32 @@ defmodule DoudizhuWeb.GameLive do
   end
 
   @impl true
-  def handle_params(%{"replay" => game_id}, _uri, socket) do
-    {:noreply, open_replay(socket, game_id)}
+  def handle_params(%{"replay" => game_id}, uri, socket) do
+    {:noreply, socket |> assign(:current_uri, uri) |> open_replay(game_id)}
   end
 
-  def handle_params(%{"history" => _value}, _uri, socket) do
-    {:noreply, open_replay_library(socket)}
+  def handle_params(%{"history" => _value}, uri, socket) do
+    {:noreply, socket |> assign(:current_uri, uri) |> open_replay_library()}
   end
 
-  def handle_params(%{"room" => room_id} = params, _uri, socket) do
-    {:noreply, open_room(socket, room_id, params["invite"])}
+  def handle_params(%{"room" => room_id} = params, uri, socket) do
+    {:noreply, socket |> assign(:current_uri, uri) |> open_room(room_id, params["invite"])}
   end
 
-  def handle_params(_params, _uri, socket) do
-    {:noreply, show_welcome(socket)}
+  def handle_params(_params, uri, socket) do
+    {:noreply, socket |> assign(:current_uri, uri) |> show_welcome()}
   end
 
   @impl true
+  def handle_event("change-locale", %{"locale" => requested_locale}, socket) do
+    locale = Locale.negotiate([requested_locale])
+
+    {:noreply,
+     socket
+     |> push_event("store-locale", %{locale: locale, language_tag: Locale.language_tag(locale)})
+     |> push_navigate(to: locale_path(socket.assigns.current_uri, locale))}
+  end
+
   def handle_event("enter-room", %{"name" => name}, socket) do
     with {:ok, player} <- Player.new(socket.assigns.identity_id, name) do
       if socket.assigns.room_id do
@@ -192,12 +207,16 @@ defmodule DoudizhuWeb.GameLive do
   end
 
   def handle_event("copied", %{"kind" => kind}, socket) do
-    message = if kind == "replay", do: "Public replay link copied", else: "Invitation link copied"
+    message =
+      if kind == "replay",
+        do: gettext("Public replay link copied"),
+        else: gettext("Invitation link copied")
+
     {:noreply, show_toast(socket, message)}
   end
 
   def handle_event("copy-failed", _params, socket) do
-    {:noreply, show_toast(socket, "Could not copy the link")}
+    {:noreply, show_toast(socket, gettext("Could not copy the link"))}
   end
 
   @impl true
@@ -302,7 +321,7 @@ defmodule DoudizhuWeb.GameLive do
             |> leave_game()
             |> leave_room()
             |> assign(
-              page_title: "Join table",
+              page_title: gettext("Join table"),
               mode: :welcome,
               room_id: room_id,
               invite_code: invite_code,
@@ -315,7 +334,7 @@ defmodule DoudizhuWeb.GameLive do
               socket
               |> subscribe_room(room_id)
               |> assign(
-                page_title: "Private table",
+                page_title: gettext("Private table"),
                 mode: :room,
                 player_name: seat["player_name"],
                 room_id: room_id,
@@ -354,7 +373,7 @@ defmodule DoudizhuWeb.GameLive do
       {:ok, actor, snapshot} ->
         socket
         |> assign(
-          page_title: "Game in progress",
+          page_title: gettext("Game in progress"),
           mode: :game,
           game_id: game_id,
           actor: actor,
@@ -434,7 +453,7 @@ defmodule DoudizhuWeb.GameLive do
     |> leave_game()
     |> leave_room()
     |> assign(
-      page_title: "Recorded games",
+      page_title: gettext("Recorded games"),
       mode: :replay_library,
       replay_games: Replays.list_for_identity(socket.assigns.identity_id),
       replay: nil,
@@ -456,7 +475,7 @@ defmodule DoudizhuWeb.GameLive do
          {:ok, frame} <- Replays.frame(replay, 0) do
       socket
       |> assign(
-        page_title: "Replay",
+        page_title: gettext("Replay"),
         mode: :replay,
         game_id: game_id,
         replay: replay,
@@ -470,7 +489,7 @@ defmodule DoudizhuWeb.GameLive do
       {:error, reason} ->
         socket
         |> assign(
-          page_title: "Recorded games",
+          page_title: gettext("Recorded games"),
           mode: :replay_library,
           replay_games: Replays.list_for_identity(socket.assigns.identity_id),
           replay_error: GameLiveHTML.error_message(reason),
@@ -585,6 +604,18 @@ defmodule DoudizhuWeb.GameLive do
 
   defp put_game_error(socket, reason),
     do: assign(socket, :game_error, GameLiveHTML.error_message(reason))
+
+  defp locale_path(uri, locale) do
+    parsed = URI.parse(uri)
+
+    query =
+      parsed.query
+      |> then(&if(&1, do: URI.decode_query(&1), else: %{}))
+      |> Map.put("locale", locale)
+      |> URI.encode_query()
+
+    URI.to_string(%URI{path: parsed.path || "/", query: query})
+  end
 
   defp own_seat(nil, _identity_id), do: nil
 

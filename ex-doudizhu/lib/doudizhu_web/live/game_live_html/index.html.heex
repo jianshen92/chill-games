@@ -1,16 +1,22 @@
-<Layouts.app flash={@flash} connected={@connected}>
+<Layouts.app
+  flash={@flash}
+  connected={@connected}
+  locale={@locale}
+  language_tag={@language_tag}
+>
   <section :if={@mode == :welcome} id="welcome-panel" class="panel welcome-panel">
     <div>
-      <p class="eyebrow">Three-player climbing game</p>
-      <h1>Call the landlord.<br />Outplay your friends.</h1>
+      <p class="eyebrow">{gettext("Three-player climbing game")}</p>
+      <h1>{gettext("Call the landlord.")}<br />{gettext("Outplay your friends.")}</h1>
       <p class="lede">
-        Create a private table or follow an invitation link. Your hand stays private and every move is
-        validated by the server.
+        {gettext(
+          "Create a private table or follow an invitation link. Your hand stays private and every move is validated by the server."
+        )}
       </p>
     </div>
 
     <form id="welcome-form" class="join-card" phx-submit="enter-room">
-      <label for="player-name">Your name</label>
+      <label for="player-name">{gettext("Your name")}</label>
       <input
         id="player-name"
         name="name"
@@ -18,25 +24,30 @@
         maxlength="30"
         autocomplete="nickname"
         required
-        placeholder="e.g. Alice"
+        placeholder={gettext("e.g. Alice")}
       />
       <p :if={@room_id} id="invitation-note" class="muted">
-        You have been invited to a private table.
+        {gettext("You have been invited to a private table.")}
       </p>
       <div class="button-row">
         <button
           :if={!@room_id}
           class="button primary"
           type="submit"
-          phx-disable-with="Creating…"
+          phx-disable-with={gettext("Creating…")}
         >
-          Create private table
+          {gettext("Create private table")}
         </button>
-        <button :if={@room_id} class="button primary" type="submit" phx-disable-with="Joining…">
-          Join table
+        <button
+          :if={@room_id}
+          class="button primary"
+          type="submit"
+          phx-disable-with={gettext("Joining…")}
+        >
+          {gettext("Join table")}
         </button>
         <button class="button secondary" type="button" phx-click="open-replay-library">
-          Replay a game
+          {gettext("Replay a game")}
         </button>
       </div>
       <p id="welcome-error" class="error" role="alert">{@welcome_error}</p>
@@ -46,15 +57,15 @@
   <section :if={@mode == :room} id="room-panel" class="panel room-panel">
     <div class="section-heading">
       <div>
-        <p class="eyebrow">Private table</p>
-        <h2>Waiting room</h2>
+        <p class="eyebrow">{gettext("Private table")}</p>
+        <h2>{gettext("Waiting room")}</h2>
       </div>
-      <span id="room-status" class="pill">{@room["status"]}</span>
+      <span id="room-status" class="pill">{room_status_name(@room["status"])}</span>
     </div>
 
     <div :if={@invite_code} id="invitation-card" class="invitation-card">
       <div>
-        <span class="muted">Invitation code</span>
+        <span class="muted">{gettext("Invitation code")}</span>
         <strong id="invite-code" class="invite-code">{@invite_code}</strong>
       </div>
       <button
@@ -65,30 +76,32 @@
         data-copy={~p"/?room=#{@room_id}&invite=#{@invite_code}"}
         data-copy-kind="invite"
       >
-        Copy invite link
+        {gettext("Copy invite link")}
       </button>
     </div>
 
-    <ol id="seat-list" class="seat-list" aria-label="Players">
+    <ol id="seat-list" class="seat-list" aria-label={gettext("Players")}>
       <%= for position <- 1..3 do %>
         <% seat = Enum.find(@room["seats"], &(&1["position"] == position)) %>
         <li class="seat">
           <span class="seat-number">{position}</span>
           <div class="seat-details">
-            <strong>{if seat, do: seat["player_name"], else: "Open seat"}</strong>
+            <strong>{if seat, do: seat["player_name"], else: gettext("Open seat")}</strong>
             <span>
               <%= cond do %>
                 <% seat && seat["player_id"] == @identity_id -> %>
-                  You
+                  {gettext("You")}
                 <% seat -> %>
-                  Connected player
+                  {gettext("Connected player")}
                 <% true -> %>
-                  Waiting for a friend
+                  {gettext("Waiting for a friend")}
               <% end %>
             </span>
           </div>
           <span :if={seat} class="ready-mark">
-            {if seat["ready"], do: "Ready", else: "Not ready"}
+            {if seat["ready"],
+              do: gettext("Ready"),
+              else: pgettext("readiness status", "Not ready")}
           </span>
         </li>
       <% end %>
@@ -99,7 +112,9 @@
     <% can_start? = can_start?(@room, @identity_id) %>
     <div class="room-actions">
       <button id="ready-button" class="button primary" type="button" phx-click="ready">
-        {if own_seat && own_seat["ready"], do: "Not ready", else: "I’m ready"}
+        {if own_seat && own_seat["ready"],
+          do: pgettext("readiness action", "Not ready"),
+          else: gettext("I’m ready")}
       </button>
       <button
         :if={owner?}
@@ -108,16 +123,16 @@
         type="button"
         phx-click="start-game"
         disabled={!can_start?}
-        phx-disable-with="Starting…"
+        phx-disable-with={gettext("Starting…")}
       >
-        Start game
+        {gettext("Start game")}
       </button>
     </div>
     <p id="room-message" class={if @room_error, do: "error", else: "muted"} role="status">
       {@room_error ||
         if(can_start?,
-          do: "Everyone is ready.",
-          else: "The game starts when all three players are ready."
+          do: gettext("Everyone is ready."),
+          else: gettext("The game starts when all three players are ready.")
         )}
     </p>
   </section>
@@ -129,17 +144,20 @@
   >
     <div class="section-heading">
       <div>
-        <p class="eyebrow">Your history</p>
-        <h2>Recorded games</h2>
+        <p class="eyebrow">{gettext("Your history")}</p>
+        <h2>{gettext("Recorded games")}</h2>
       </div>
-      <button class="button ghost" type="button" phx-click="close-replay-library">Back</button>
+      <button class="button ghost" type="button" phx-click="close-replay-library">
+        {gettext("Back")}
+      </button>
     </div>
     <p class="muted replay-intro">
-      Completed replays are rebuilt from the original deal and accepted commands. Enter any public
-      game ID to review all hands, or choose one of your recent games.
+      {gettext(
+        "Completed replays are rebuilt from the original deal and accepted commands. Enter any public game ID to review all hands, or choose one of your recent games."
+      )}
     </p>
     <form id="replay-id-form" class="replay-id-form" phx-submit="open-replay">
-      <label for="replay-game-id">Public game ID</label>
+      <label for="replay-game-id">{gettext("Public game ID")}</label>
       <div class="button-row">
         <input
           id="replay-game-id"
@@ -148,22 +166,24 @@
           required
           placeholder="game_…"
         />
-        <button class="button accent" type="submit" phx-disable-with="Opening…">Open replay</button>
+        <button class="button accent" type="submit" phx-disable-with={gettext("Opening…")}>
+          {gettext("Open replay")}
+        </button>
       </div>
     </form>
 
     <div id="replay-list" class="replay-list">
       <div :if={Enum.empty?(@replay_games)} class="replay-empty">
-        No recorded games were found for this guest identity.
+        {gettext("No recorded games were found for this guest identity.")}
       </div>
       <article :for={game <- @replay_games} class="replay-entry">
         <div>
           <h3>{Enum.map_join(game["players"], " · ", & &1["name"])}</h3>
           <p>
-            {replay_date(game["played_at"])} · {game["final_version"]} turns ·
+            {replay_date(game["played_at"])} · {turn_count(game["final_version"])} ·
             <span class="replay-result">{replay_result(game)}</span>
           </p>
-          <p>Game ID: {game["public_replay_id"]}</p>
+          <p>{gettext("Game ID: %{game_id}", game_id: game["public_replay_id"])}</p>
         </div>
         <button
           class="button accent"
@@ -171,7 +191,7 @@
           phx-click="open-replay"
           phx-value-game-id={game["game_id"]}
         >
-          Watch replay
+          {gettext("Watch replay")}
         </button>
       </article>
     </div>
@@ -188,14 +208,18 @@
       <section class="panel table-panel">
         <div class="game-header">
           <div>
-            <p class="eyebrow">Game in progress</p>
+            <p class="eyebrow">{gettext("Game in progress")}</p>
             <h2 id="phase-title">
-              {if replaying?, do: "Replay · ", else: ""}{phase_name(game["phase"])}
+              {if replaying?, do: gettext("Replay · "), else: ""}{phase_name(game["phase"])}
             </h2>
           </div>
           <div class="game-meta">
-            <span :if={you && you["role"]} id="role-pill" class="pill">{you["role"]}</span>
-            <span id="version-label" class="muted">Turn {snapshot["sequence"]}</span>
+            <span :if={you && you["role"]} id="role-pill" class="pill">
+              {role_name(you["role"])}
+            </span>
+            <span id="version-label" class="muted">
+              {gettext("Turn %{turn}", turn: snapshot["sequence"])}
+            </span>
             <button
               :if={!replaying?}
               id="resync-button"
@@ -203,7 +227,7 @@
               type="button"
               phx-click="resync"
             >
-              Resync
+              {gettext("Resync")}
             </button>
           </div>
         </div>
@@ -211,7 +235,9 @@
         <div :if={replaying?} id="replay-controls" class="replay-controls">
           <% frame_count = @replay.metadata["frame_count"] %>
           <% frame_index = @replay_frame["index"] %>
-          <button class="button ghost compact" type="button" phx-click="exit-replay">Exit replay</button>
+          <button class="button ghost compact" type="button" phx-click="exit-replay">
+            {gettext("Exit replay")}
+          </button>
           <button
             id="copy-replay-link-button"
             class="button ghost compact"
@@ -220,24 +246,26 @@
             data-copy={~p"/?replay=#{@replay.metadata["public_replay_id"]}"}
             data-copy-kind="replay"
           >
-            Copy link
+            {gettext("Copy link")}
           </button>
           <button
             class="button ghost compact"
             type="button"
-            aria-label="Previous replay frame"
+            aria-label={gettext("Previous replay frame")}
             phx-click="previous-replay-frame"
             disabled={frame_index == 0}
           >
             ←
           </button>
           <button class="button accent compact" type="button" phx-click="toggle-replay">
-            {if @replay_playing, do: "Pause", else: "Play"}
+            {if @replay_playing,
+              do: gettext("Pause"),
+              else: pgettext("replay control", "Play")}
           </button>
           <button
             class="button ghost compact"
             type="button"
-            aria-label="Next replay frame"
+            aria-label={gettext("Next replay frame")}
             phx-click="next-replay-frame"
             disabled={frame_index >= frame_count - 1}
           >
@@ -251,11 +279,11 @@
               min="0"
               max={max(0, frame_count - 1)}
               value={frame_index}
-              aria-label="Replay position"
+              aria-label={gettext("Replay position")}
               phx-debounce="100"
             />
           </form>
-          <strong id="replay-position">Step {frame_index + 1} of {frame_count}</strong>
+          <strong id="replay-position">{replay_step(frame_index, frame_count)}</strong>
         </div>
 
         <div :if={!replaying?} id="opponents" class="opponents">
@@ -267,9 +295,9 @@
               <span class="avatar">{player["name"] |> String.first() |> String.upcase()}</span>
               <div>
                 <strong>{player["name"]}</strong>
-                <span>{get_in(game, ["hand_counts", player["player_id"]]) || 0} cards</span>
+                <span>{card_count(get_in(game, ["hand_counts", player["player_id"]]) || 0)}</span>
                 <span :if={player["player_id"] == game["landlord"]} class="landlord-mark">
-                  Landlord
+                  {gettext("Landlord")}
                 </span>
               </div>
             </div>
@@ -280,7 +308,7 @@
           :if={replaying?}
           id="replay-hands"
           class="replay-hands"
-          aria-label="All player hands"
+          aria-label={gettext("All player hands")}
         >
           <%= for player <- players do %>
             <% cards = snapshot["hands"][player["player_id"]] || [] %>
@@ -288,10 +316,10 @@
             <div class="replay-hand">
               <div class="replay-hand-heading">
                 <strong>{player["name"]}</strong>
-                <span>{role || "Unassigned"} · {length(cards)} cards</span>
+                <span>{role_name(role)} · {card_count(length(cards))}</span>
               </div>
               <div class="mini-cards replay-hand-cards">
-                <span :if={Enum.empty?(cards)} class="empty-state">No cards</span>
+                <span :if={Enum.empty?(cards)} class="empty-state">{gettext("No cards")}</span>
                 <.mini_card :for={card <- cards} card_id={card} />
               </div>
             </div>
@@ -303,7 +331,7 @@
             {turn_message(game, players, @identity_id, replaying?)}
           </div>
           <div id="lead-area" class="lead-area">
-            <span class="muted">Current lead</span>
+            <span class="muted">{gettext("Current lead")}</span>
             <div id="lead-cards" class="mini-cards">
               <%= if game["current_lead"] do %>
                 <.mini_card
@@ -311,7 +339,7 @@
                   card_id={card}
                 />
               <% else %>
-                <span class="empty-state">No cards led</span>
+                <span class="empty-state">{gettext("No cards led")}</span>
               <% end %>
             </div>
             <strong id="lead-description">
@@ -319,9 +347,11 @@
             </strong>
           </div>
           <div :if={replaying?} id="bottom-area" class="bottom-area">
-            <span class="muted">Bottom cards</span>
+            <span class="muted">{gettext("Bottom cards")}</span>
             <div id="bottom-cards" class="mini-cards">
-              <span :if={Enum.empty?(snapshot["bottom_cards"])} class="empty-state">Not dealt</span>
+              <span :if={Enum.empty?(snapshot["bottom_cards"])} class="empty-state">
+                {gettext("Not dealt")}
+              </span>
               <.mini_card :for={card <- snapshot["bottom_cards"]} card_id={card} />
             </div>
           </div>
@@ -331,14 +361,14 @@
           <% cards = (you && you["hand"]) || [] %>
           <div id="hand-heading" class="hand-heading">
             <div>
-              <span class="muted">Your hand</span>
-              <strong id="hand-count">{length(cards)} {if length(cards) == 1,
-                do: "card",
-                else: "cards"}</strong>
+              <span class="muted">{gettext("Your hand")}</span>
+              <strong id="hand-count">{card_count(length(cards))}</strong>
             </div>
-            <span id="selection-count" class="muted">{MapSet.size(@selected)} selected</span>
+            <span id="selection-count" class="muted">
+              {selected_count(MapSet.size(@selected))}
+            </span>
           </div>
-          <div id="hand" class="hand" aria-label="Your cards">
+          <div id="hand" class="hand" aria-label={gettext("Your cards")}>
             <.card
               :for={card <- cards}
               card_id={card}
@@ -359,7 +389,7 @@
                 phx-value-bid={bid}
                 disabled={pending?}
               >
-                Bid {bid}
+                {bid_label(bid)}
               </button>
               <button
                 class="button ghost"
@@ -367,7 +397,7 @@
                 phx-click="auction-pass"
                 disabled={pending?}
               >
-                Pass
+                {pgettext("bidding action", "Pass")}
               </button>
             </div>
             <div :if={playing_turn?} id="play-controls" class="button-row">
@@ -377,7 +407,7 @@
                 phx-click="play-selected"
                 disabled={pending? || MapSet.size(@selected) == 0}
               >
-                Play selected
+                {gettext("Play selected")}
               </button>
               <button
                 class="button ghost"
@@ -385,7 +415,7 @@
                 phx-click="play-pass"
                 disabled={pending? || is_nil(game["current_lead"])}
               >
-                Pass
+                {pgettext("playing action", "Pass")}
               </button>
               <button
                 class="button ghost"
@@ -393,11 +423,11 @@
                 phx-click="clear-selection"
                 disabled={pending? || MapSet.size(@selected) == 0}
               >
-                Clear
+                {gettext("Clear")}
               </button>
             </div>
             <p :if={!bidding_turn? && !playing_turn? && game["phase"] != "finished"} class="muted">
-              Waiting for another player…
+              {gettext("Waiting for another player…")}
             </p>
           </div>
         <% end %>
@@ -405,11 +435,12 @@
         <section :if={game["phase"] == "finished" && game["settlement"]} class="settlement">
           <% settlement = game["settlement"] %>
           <% winner = Enum.find(players, &(&1["player_id"] == settlement["winning_player"])) %>
-          <p class="eyebrow">Game finished</p>
+          <p class="eyebrow">{gettext("Game finished")}</p>
           <h3 id="winner-title">
-            {if winner, do: winner["name"], else: "A player"} wins for the {settlement[
-              "winning_side"
-            ]}
+            {winner_title(
+              if(winner, do: winner["name"], else: gettext("A player")),
+              settlement["winning_side"]
+            )}
           </h3>
           <div id="score-list" class="score-list">
             <div :for={player <- players} class="score-row">
@@ -428,8 +459,8 @@
       <aside class="panel activity-panel">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">Table activity</p>
-            <h2>Game log</h2>
+            <p class="eyebrow">{gettext("Table activity")}</p>
+            <h2>{gettext("Game log")}</h2>
           </div>
         </div>
         <ol

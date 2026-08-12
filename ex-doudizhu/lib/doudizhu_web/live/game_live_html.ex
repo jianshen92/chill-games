@@ -67,85 +67,115 @@ defmodule DoudizhuWeb.GameLiveHTML do
 
   def phase_name(phase) do
     %{
-      "awaiting_deal" => "Waiting for deal",
-      "bidding" => "Call the landlord",
-      "playing" => "Play",
-      "finished" => "Settlement"
+      "awaiting_deal" => gettext("Waiting for deal"),
+      "bidding" => gettext("Call the landlord"),
+      "playing" => pgettext("game phase", "Play"),
+      "finished" => gettext("Settlement")
     }
-    |> Map.get(phase, phase)
+    |> Map.get(phase, humanize(phase))
   end
+
+  def room_status_name("open"), do: gettext("Open")
+  def room_status_name("started"), do: gettext("Started")
+  def room_status_name("closed"), do: gettext("Closed")
+  def room_status_name(status), do: humanize(status)
+
+  def role_name("landlord"), do: gettext("Landlord")
+  def role_name("farmer"), do: gettext("Farmer")
+  def role_name(nil), do: gettext("Unassigned")
+  def role_name(role), do: humanize(role)
 
   def combination_name(nil), do: ""
 
   def combination_name(combination) do
     %{
-      "single" => "Single",
-      "pair" => "Pair",
-      "triple" => "Triple",
-      "triple_with_single" => "Triple with single",
-      "triple_with_pair" => "Triple with pair",
-      "straight" => "Straight",
-      "consecutive_pairs" => "Consecutive pairs",
-      "airplane" => "Airplane",
-      "airplane_with_singles" => "Airplane with singles",
-      "airplane_with_pairs" => "Airplane with pairs",
-      "four_with_singles" => "Four with singles",
-      "four_with_pairs" => "Four with pairs",
-      "bomb" => "Bomb",
-      "rocket" => "Rocket"
+      "single" => gettext("Single"),
+      "pair" => gettext("Pair"),
+      "triple" => gettext("Triple"),
+      "triple_with_single" => gettext("Triple with single"),
+      "triple_with_pair" => gettext("Triple with pair"),
+      "straight" => gettext("Straight"),
+      "consecutive_pairs" => gettext("Consecutive pairs"),
+      "airplane" => gettext("Airplane"),
+      "airplane_with_singles" => gettext("Airplane with singles"),
+      "airplane_with_pairs" => gettext("Airplane with pairs"),
+      "four_with_singles" => gettext("Four with singles"),
+      "four_with_pairs" => gettext("Four with pairs"),
+      "bomb" => gettext("Bomb"),
+      "rocket" => gettext("Rocket")
     }
-    |> Map.get(combination["type"], combination["type"])
+    |> Map.get(combination["type"], humanize(combination["type"]))
   end
+
+  def card_count(count), do: ngettext("%{count} card", "%{count} cards", count)
+  def turn_count(count), do: ngettext("%{count} turn", "%{count} turns", count)
+  def selected_count(count), do: ngettext("%{count} selected", "%{count} selected", count)
+
+  def replay_step(index, count) do
+    gettext("Step %{current} of %{count}", current: index + 1, count: count)
+  end
+
+  def bid_label(bid), do: gettext("Bid %{bid}", bid: bid)
 
   def turn_message(game, players, identity_id, replaying?) do
     current = current_player(game, players)
     current_id = current_player_id(game)
 
     cond do
-      game["phase"] == "finished" -> "Game complete"
-      replaying? && current -> "Recorded turn: #{current["name"]}"
-      replaying? -> "Recorded state"
-      current_id == identity_id -> "Your turn"
-      current -> "#{current["name"]} is thinking"
-      true -> "Waiting"
+      game["phase"] == "finished" -> gettext("Game complete")
+      replaying? && current -> gettext("Recorded turn: %{player}", player: current["name"])
+      replaying? -> gettext("Recorded state")
+      current_id == identity_id -> gettext("Your turn")
+      current -> gettext("%{player} is thinking", player: current["name"])
+      true -> gettext("Waiting")
     end
   end
 
   def event_description(event, players) do
     player = fn id ->
       case Enum.find(players, &(&1["player_id"] == id)) do
-        nil -> "A player"
+        nil -> gettext("A player")
         found -> found["name"]
       end
     end
 
     case event["type"] do
       "cards_dealt" ->
-        "Cards dealt. #{player.(event["auction_starter"])} starts the auction."
+        gettext("Cards dealt. %{player} starts the auction.",
+          player: player.(event["auction_starter"])
+        )
 
       "auction_passed" ->
-        "#{player.(event["player_id"])} passed in the auction."
+        gettext("%{player} passed in the auction.", player: player.(event["player_id"]))
 
       "bid_placed" ->
-        "#{player.(event["player_id"])} bid #{event["bid"]}."
+        gettext("%{player} bid %{bid}.", player: player.(event["player_id"]), bid: event["bid"])
 
       "deal_voided" ->
-        "Everyone passed. The deal was voided."
+        gettext("Everyone passed. The deal was voided.")
 
       "landlord_chosen" ->
-        "#{player.(event["landlord"])} became landlord with bid #{event["bid"]}."
+        gettext("%{player} became landlord with bid %{bid}.",
+          player: player.(event["landlord"]),
+          bid: event["bid"]
+        )
 
       "cards_played" ->
-        "#{player.(event["player_id"])} played #{combination_name(event["combination"])}."
+        gettext("%{player} played %{combination}.",
+          player: player.(event["player_id"]),
+          combination: combination_name(event["combination"])
+        )
 
       "turn_passed" ->
-        "#{player.(event["player_id"])} passed."
+        gettext("%{player} passed.", player: player.(event["player_id"]))
 
       "lead_cleared" ->
-        "Lead cleared. #{player.(event["next_leader"])} leads again."
+        gettext("Lead cleared. %{player} leads again.", player: player.(event["next_leader"]))
 
       "game_finished" ->
-        "Game finished: #{event["settlement"]["winning_side"]} win."
+        gettext("Game finished: %{side} win.",
+          side: role_name(event["settlement"]["winning_side"])
+        )
 
       type ->
         humanize(type)
@@ -159,8 +189,14 @@ defmodule DoudizhuWeb.GameLiveHTML do
     end
   end
 
-  def replay_result(%{"winner" => %{"side" => side}}), do: "#{side} won"
-  def replay_result(game), do: game["status"]
+  def replay_result(%{"winner" => %{"side" => side}}),
+    do: gettext("%{side} won", side: role_name(side))
+
+  def replay_result(game), do: phase_name(game["status"])
+
+  def winner_title(winner_name, side) do
+    gettext("%{player} wins for the %{side}", player: winner_name, side: role_name(side))
+  end
 
   def score(delta) when delta >= 0, do: "+#{delta}"
   def score(delta), do: to_string(delta)
@@ -174,54 +210,115 @@ defmodule DoudizhuWeb.GameLiveHTML do
     do: reason |> Atom.to_string() |> error_message()
 
   def error_message(code) when is_binary(code) do
-    %{
-      "name_required" => "Enter a name to continue.",
-      "name_too_long" => "Names may contain at most 30 characters.",
-      "invalid_invite" => "That invitation code is invalid.",
-      "room_not_found" => "That private table does not exist.",
-      "room_full" => "This table already has three players.",
-      "room_not_open" => "This table is no longer open.",
-      "not_in_room" => "You do not have a seat at this table.",
-      "not_room_owner" => "Only the table owner can start the game.",
-      "players_not_ready" => "All three players must be ready.",
-      "not_authorized" => "You are not authorized for that seat.",
-      "controller_lease_invalid" =>
-        "This seat was opened in another connection. Reload to reclaim it.",
-      "stale_game_version" => "Your view was stale. Resync and try again.",
-      "not_players_turn" => "It is not your turn.",
-      "bid_must_exceed" => "Your bid must exceed the current bid.",
-      "invalid_combination" => "Those cards do not form a legal combination.",
-      "cards_not_held" => "Your hand does not contain those cards.",
-      "does_not_beat_current_lead" => "That play does not beat the current lead.",
-      "cannot_pass_when_leading" => "You cannot pass when you have the lead.",
-      "replay_not_finished" =>
-        "Full-information replay becomes available after the game finishes.",
-      "replay_frame_not_found" => "That replay position does not exist.",
-      "replay_diverged" => "The recorded commands did not reproduce the saved result.",
-      "replay_corrupt" => "This replay record could not be reconstructed.",
-      "game_not_found" => "That game does not exist.",
-      "internal_error" => "The server could not complete that request."
-    }
-    |> Map.get(code, humanize(code))
+    case code do
+      "name_required" ->
+        gettext("Enter a name to continue.")
+
+      "name_too_long" ->
+        gettext("Names may contain at most 30 characters.")
+
+      "invalid_invite" ->
+        gettext("That invitation code is invalid.")
+
+      "room_not_found" ->
+        gettext("That private table does not exist.")
+
+      "room_full" ->
+        gettext("This table already has three players.")
+
+      "room_not_open" ->
+        gettext("This table is no longer open.")
+
+      "not_in_room" ->
+        gettext("You do not have a seat at this table.")
+
+      "not_room_owner" ->
+        gettext("Only the table owner can start the game.")
+
+      "players_not_ready" ->
+        gettext("All three players must be ready.")
+
+      "not_authorized" ->
+        gettext("You are not authorized for that seat.")
+
+      "controller_lease_invalid" ->
+        gettext("This seat was opened in another connection. Reload to reclaim it.")
+
+      "stale_game_version" ->
+        gettext("Your view was stale. Resync and try again.")
+
+      "not_players_turn" ->
+        gettext("It is not your turn.")
+
+      "bid_must_exceed" ->
+        gettext("Your bid must exceed the current bid.")
+
+      "invalid_combination" ->
+        gettext("Those cards do not form a legal combination.")
+
+      "cards_not_held" ->
+        gettext("Your hand does not contain those cards.")
+
+      "does_not_beat_current_lead" ->
+        gettext("That play does not beat the current lead.")
+
+      "cannot_pass_when_leading" ->
+        gettext("You cannot pass when you have the lead.")
+
+      "replay_not_finished" ->
+        gettext("Full-information replay becomes available after the game finishes.")
+
+      "replay_frame_not_found" ->
+        gettext("That replay position does not exist.")
+
+      "replay_diverged" ->
+        gettext("The recorded commands did not reproduce the saved result.")
+
+      "replay_corrupt" ->
+        gettext("This replay record could not be reconstructed.")
+
+      "game_not_found" ->
+        gettext("That game does not exist.")
+
+      "internal_error" ->
+        gettext("The server could not complete that request.")
+
+      _unknown ->
+        humanize(code)
+    end
   end
 
-  def error_message(_reason), do: "The server could not complete that request."
+  def error_message(_reason), do: gettext("The server could not complete that request.")
 
   defp parse_card("JOKER_SMALL") do
-    %{rank: "小", suit: "", center: "JOKER", label: "Small joker", joker: true, red: false}
+    %{
+      rank: "小",
+      suit: "",
+      center: "JOKER",
+      label: gettext("Small joker"),
+      joker: true,
+      red: false
+    }
   end
 
   defp parse_card("JOKER_BIG") do
-    %{rank: "大", suit: "", center: "JOKER", label: "Big joker", joker: true, red: true}
+    %{
+      rank: "大",
+      suit: "",
+      center: "JOKER",
+      label: gettext("Big joker"),
+      joker: true,
+      red: true
+    }
   end
 
   defp parse_card(<<suit_id::binary-size(1), rank::binary>>) do
     suit =
       %{
-        "C" => %{symbol: "♣", name: "clubs", red: false},
-        "D" => %{symbol: "♦", name: "diamonds", red: true},
-        "H" => %{symbol: "♥", name: "hearts", red: true},
-        "S" => %{symbol: "♠", name: "spades", red: false}
+        "C" => %{symbol: "♣", red: false},
+        "D" => %{symbol: "♦", red: true},
+        "H" => %{symbol: "♥", red: true},
+        "S" => %{symbol: "♠", red: false}
       }
       |> Map.fetch!(suit_id)
 
@@ -229,13 +326,18 @@ defmodule DoudizhuWeb.GameLiveHTML do
       rank: rank,
       suit: suit.symbol,
       center: suit.symbol,
-      label: "#{rank} of #{suit.name}",
+      label: card_label(suit_id, rank),
       joker: false,
       red: suit.red
     }
   end
 
-  defp humanize(nil), do: "Unknown error"
+  defp card_label("C", rank), do: gettext("%{rank} of clubs", rank: rank)
+  defp card_label("D", rank), do: gettext("%{rank} of diamonds", rank: rank)
+  defp card_label("H", rank), do: gettext("%{rank} of hearts", rank: rank)
+  defp card_label("S", rank), do: gettext("%{rank} of spades", rank: rank)
+
+  defp humanize(nil), do: gettext("Unknown error")
 
   defp humanize(value) do
     value

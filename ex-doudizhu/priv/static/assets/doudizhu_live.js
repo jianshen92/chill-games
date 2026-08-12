@@ -32,6 +32,12 @@
     },
   };
 
+  window.addEventListener("phx:store-locale", (event) => {
+    const {locale, language_tag: languageTag} = event.detail;
+    document.cookie = `doudizhu_locale=${encodeURIComponent(locale)}; Max-Age=31536000; Path=/; SameSite=Lax`;
+    document.documentElement.lang = languageTag;
+  });
+
   const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content");
   const liveSocket = new LiveView.LiveSocket("/live", Phoenix.Socket, {
     hooks: Hooks,

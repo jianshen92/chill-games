@@ -11,6 +11,8 @@ config :doudizhu,
   ecto_repos: [Doudizhu.Repo],
   generators: [timestamp_type: :utc_datetime]
 
+config :doudizhu, DoudizhuWeb.Gettext, default_locale: "en"
+
 # Configure the endpoint
 config :doudizhu, DoudizhuWeb.Endpoint,
   url: [host: "localhost"],
