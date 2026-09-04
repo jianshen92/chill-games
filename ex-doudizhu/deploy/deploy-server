@@ -1,0 +1,115 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+revision=${1:-}
+if [[ ! "$revision" =~ ^[0-9a-f]{40}$ ]]; then
+  echo "usage: deploy-server <40-character-git-revision>" >&2
+  exit 2
+fi
+
+root=/opt/chill-game
+checkout="$root/build"
+app="$checkout/ex-doudizhu"
+releases="$root/releases"
+release="$releases/$revision"
+environment="$root/shared/doudizhu.env"
+lock_file="$root/deploy.lock"
+
+exec 9>"$lock_file"
+if ! flock -n 9; then
+  echo "another deployment is already running" >&2
+  exit 1
+fi
+
+started_at=$SECONDS
+phase() {
+  printf '\n==> %s (%ss elapsed)\n' "$1" "$((SECONDS - started_at))"
+}
+
+phase "fetching $revision"
+git -C "$checkout" fetch --quiet --prune origin main
+git -C "$checkout" cat-file -e "$revision^{commit}"
+if ! git -C "$checkout" merge-base --is-ancestor "$revision" origin/main; then
+  echo "revision is not reachable from origin/main" >&2
+  exit 1
+fi
+git -C "$checkout" checkout --quiet --force --detach "$revision"
+
+cd "$app"
+export MIX_ENV=prod
+
+dependency_hash=$(
+  { sha256sum mix.exs mix.lock; } | sha256sum | cut -d' ' -f1
+)
+dependency_hash_file="$root/dependency-source.sha256"
+if [[ ! -f "$dependency_hash_file" ]] ||
+  [[ "$(cat "$dependency_hash_file")" != "$dependency_hash" ]]; then
+  phase "fetching and compiling dependencies"
+  mix deps.get --only prod
+  mix deps.compile
+  printf '%s\n' "$dependency_hash" >"$dependency_hash_file"
+fi
+
+phase "incremental application compilation"
+mix compile
+
+phase "assembling immutable release"
+rm -rf "$release"
+mix release --no-compile --path "$release"
+
+set -a
+# shellcheck disable=SC1090
+source "$environment"
+set +a
+
+phase "running database migrations"
+"$release/bin/migrate"
+
+previous_release=""
+if [[ -L "$root/current" ]]; then
+  previous_release=$(readlink -f "$root/current")
+fi
+
+phase "activating release"
+ln -sfn "$release" "$root/current.next"
+mv -Tf "$root/current.next" "$root/current"
+sudo systemctl restart doudizhu.service
+
+healthy=false
+for _attempt in {1..30}; do
+  if curl --silent --show-error --fail --max-time 2 \
+    http://127.0.0.1:4000/api/health >/dev/null; then
+    healthy=true
+    break
+  fi
+  sleep 0.25
+done
+
+if [[ "$healthy" != true ]]; then
+  echo "health check failed; restoring the previous release" >&2
+  if [[ -n "$previous_release" && -d "$previous_release" ]]; then
+    ln -sfn "$previous_release" "$root/current.next"
+    mv -Tf "$root/current.next" "$root/current"
+    sudo systemctl restart doudizhu.service
+  fi
+  sudo systemctl --no-pager --full status doudizhu.service || true
+  exit 1
+fi
+
+printf '%s\n' "$revision" >"$root/deployed-revision"
+
+phase "removing old releases"
+current_release=$(readlink -f "$root/current")
+mapfile -t old_releases < <(find "$releases" -mindepth 1 -maxdepth 1 -type d -printf '%T@ %p\n' | sort -rn | cut -d' ' -f2-)
+kept=0
+for old_release in "${old_releases[@]}"; do
+  if [[ "$old_release" == "$current_release" || "$kept" -lt 4 ]]; then
+    ((kept += 1))
+  else
+    rm -rf "$old_release"
+  fi
+done
+
+phase "deployed successfully"
+printf 'revision: %s\n' "$revision"
+printf 'release:  %s\n' "$release"

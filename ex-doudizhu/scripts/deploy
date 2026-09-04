@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+app_dir=$(dirname "$script_dir")
+repo_root=$(git -C "$app_dir" rev-parse --show-toplevel)
+ssh_host=${DEPLOY_SSH_HOST:-77.42.90.207}
+ssh_user=${DEPLOY_SSH_USER:-deploy}
+ssh_key=${DEPLOY_SSH_KEY:-$HOME/.ssh/js-hetzner}
+public_url=${DEPLOY_PUBLIC_URL:-https://77-42-90-207.sslip.io}
+run_tests=true
+
+if [[ "${1:-}" == "--skip-tests" ]]; then
+  run_tests=false
+elif [[ $# -gt 0 ]]; then
+  echo "usage: $0 [--skip-tests]" >&2
+  exit 2
+fi
+
+if [[ -n "$(git -C "$repo_root" status --porcelain)" ]]; then
+  echo "refusing to deploy a dirty working tree; commit the changes first" >&2
+  exit 1
+fi
+
+if [[ "$run_tests" == true ]]; then
+  echo "==> running precommit checks"
+  (cd "$app_dir" && mix precommit)
+  if [[ -n "$(git -C "$repo_root" status --porcelain)" ]]; then
+    echo "precommit checks changed the working tree; review and commit it" >&2
+    exit 1
+  fi
+fi
+
+revision=$(git -C "$repo_root" rev-parse HEAD)
+echo "==> pushing $revision to origin/main"
+git -C "$repo_root" push origin "$revision:refs/heads/main"
+
+echo "==> deploying $revision"
+ssh -i "$ssh_key" -o IdentitiesOnly=yes "$ssh_user@$ssh_host" \
+  "/home/deploy/bin/deploy-doudizhu '$revision'"
+
+echo "==> checking $public_url/api/health"
+curl --silent --show-error --fail --max-time 10 "$public_url/api/health"
+printf '\nDeployed %s to %s\n' "$revision" "$public_url"

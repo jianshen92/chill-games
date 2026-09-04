@@ -1,0 +1,27 @@
+[Unit]
+Description=Doudizhu Phoenix application
+After=network-online.target postgresql.service
+Wants=network-online.target
+Requires=postgresql.service
+
+[Service]
+Type=simple
+User=deploy
+Group=deploy
+WorkingDirectory=/opt/chill-game/current
+EnvironmentFile=/opt/chill-game/shared/doudizhu.env
+ExecStart=/opt/chill-game/current/bin/server
+Restart=on-failure
+RestartSec=2
+TimeoutStartSec=30
+TimeoutStopSec=30
+KillSignal=SIGTERM
+SyslogIdentifier=doudizhu
+LimitNOFILE=65536
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=full
+
+[Install]
+WantedBy=multi-user.target

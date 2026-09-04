@@ -43,6 +43,20 @@ Health check:
 curl http://localhost:4000/api/health
 ```
 
+## Production deployment
+
+The Hetzner deployment uses GitHub only as the source remote; compilation runs natively on the server with persistent Mix caches and no external build service. Each deployment fetches an exact commit, assembles an immutable OTP release, runs migrations, atomically switches the active release, restarts systemd, and verifies its health. Failed builds leave the running release untouched, while failed health checks restore the previous release.
+
+From a clean, committed working tree, deploy with:
+
+```sh
+scripts/deploy
+```
+
+The script runs `mix precommit`, pushes the current commit to `origin/main`, and asks the server to deploy that exact revision. Use `scripts/deploy --skip-tests` only when checks have already passed. Connection settings can be overridden with `DEPLOY_SSH_HOST`, `DEPLOY_SSH_USER`, `DEPLOY_SSH_KEY`, and `DEPLOY_PUBLIC_URL`.
+
+The checked-in operational files are under [`deploy/`](deploy/). Production secrets remain only in `/opt/chill-game/shared/doudizhu.env` on the server and must never be committed.
+
 ## Browser UI
 
 Open [`http://localhost:4000`](http://localhost:4000), enter your name, and create a private table. Copy the generated invitation link to two friends. After all three players mark themselves ready, the room owner can start the game.
