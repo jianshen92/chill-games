@@ -90,7 +90,7 @@ msgid "%{side} won"
 msgstr "%{side}获胜"
 
 #: lib/doudizhu_web/live/game_live_html.ex:135
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:449
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:451
 #, elixir-autogen, elixir-format
 msgid "A player"
 msgstr "一名玩家"
@@ -160,7 +160,7 @@ msgstr "叫地主。"
 msgid "Cards dealt. %{player} starts the auction."
 msgstr "发牌完成。%{player} 先叫地主。"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:434
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:436
 #, elixir-autogen, elixir-format
 msgid "Clear"
 msgstr "清除"
@@ -276,7 +276,7 @@ msgstr "牌局 ID：%{game_id}"
 msgid "Game complete"
 msgstr "牌局结束"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:446
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:448
 #, elixir-autogen, elixir-format
 msgid "Game finished"
 msgstr "牌局结束"
@@ -292,7 +292,7 @@ msgstr "牌局结束：%{side}获胜。"
 msgid "Game in progress"
 msgstr "牌局进行中"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:471
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:473
 #, elixir-autogen, elixir-format
 msgid "Game log"
 msgstr "牌局记录"
@@ -420,7 +420,7 @@ msgstr "对子"
 msgid "Pause"
 msgstr "暂停"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:418
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:420
 #, elixir-autogen, elixir-format
 msgid "Play selected"
 msgstr "打出所选牌"
@@ -548,7 +548,7 @@ msgstr "第 %{current} 步，共 %{count} 步"
 msgid "Straight"
 msgstr "顺子"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:470
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:472
 #, elixir-autogen, elixir-format
 msgid "Table activity"
 msgstr "牌桌动态"
@@ -664,7 +664,7 @@ msgstr "等待中"
 msgid "Waiting for a friend"
 msgstr "等待好友加入"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:438
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:440
 #, elixir-autogen, elixir-format
 msgid "Waiting for another player…"
 msgstr "等待其他玩家…"
@@ -754,7 +754,7 @@ msgstr "你的牌局状态已过期。请重新同步后再试。"
 msgid "e.g. Alice"
 msgstr "例如：小明"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:407
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:409
 #, elixir-autogen, elixir-format
 msgctxt "bidding action"
 msgid "Pass"
@@ -766,7 +766,7 @@ msgctxt "game phase"
 msgid "Play"
 msgstr "出牌"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:426
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:428
 #, elixir-autogen, elixir-format
 msgctxt "playing action"
 msgid "Pass"

@@ -93,7 +93,7 @@ msgid "%{side} won"
 msgstr ""
 
 #: lib/doudizhu_web/live/game_live_html.ex:135
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:449
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:451
 #, elixir-autogen, elixir-format
 msgid "A player"
 msgstr ""
@@ -163,7 +163,7 @@ msgstr ""
 msgid "Cards dealt. %{player} starts the auction."
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:434
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:436
 #, elixir-autogen, elixir-format
 msgid "Clear"
 msgstr ""
@@ -279,7 +279,7 @@ msgstr ""
 msgid "Game complete"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:446
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:448
 #, elixir-autogen, elixir-format
 msgid "Game finished"
 msgstr ""
@@ -295,7 +295,7 @@ msgstr ""
 msgid "Game in progress"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:471
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:473
 #, elixir-autogen, elixir-format
 msgid "Game log"
 msgstr ""
@@ -423,7 +423,7 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:418
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:420
 #, elixir-autogen, elixir-format
 msgid "Play selected"
 msgstr ""
@@ -551,7 +551,7 @@ msgstr ""
 msgid "Straight"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:470
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:472
 #, elixir-autogen, elixir-format
 msgid "Table activity"
 msgstr ""
@@ -667,7 +667,7 @@ msgstr ""
 msgid "Waiting for a friend"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:438
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:440
 #, elixir-autogen, elixir-format
 msgid "Waiting for another player…"
 msgstr ""
@@ -757,7 +757,7 @@ msgstr ""
 msgid "e.g. Alice"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:407
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:409
 #, elixir-autogen, elixir-format
 msgctxt "bidding action"
 msgid "Pass"
@@ -769,7 +769,7 @@ msgctxt "game phase"
 msgid "Play"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:426
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:428
 #, elixir-autogen, elixir-format
 msgctxt "playing action"
 msgid "Pass"

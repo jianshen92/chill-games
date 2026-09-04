@@ -189,7 +189,8 @@ h3 { font: 600 28px Georgia, serif; }
 .hand-heading { margin: 25px 0 10px; align-items: end; }
 .hand-heading span, .hand-heading strong { display: block; }
 .hand-heading strong { margin-top: 3px; }
-.hand { min-height: 156px; padding: 18px 8px 8px; display: flex; justify-content: center; align-items: flex-end; overflow-x: auto; overflow-y: hidden; scrollbar-color: var(--gold-dark) transparent; }
+.hand { min-height: 164px; overflow-x: auto; overflow-y: hidden; scrollbar-color: var(--gold-dark) transparent; }
+.hand-track { width: max-content; min-width: 100%; min-height: 164px; padding: 24px 14px 12px; display: flex; justify-content: center; align-items: flex-end; }
 .card { width: clamp(52px, 6.3vw, 78px); height: clamp(82px, 9.5vw, 116px); margin-left: clamp(-28px, -2.1vw, -16px); padding: 7px; display: flex; flex-direction: column; align-items: flex-start; flex: 0 0 auto; border: 1px solid #cfc6b4; border-radius: 8px; color: #151719; background: #f5efe1; box-shadow: 0 5px 14px rgb(0 0 0 / 25%); cursor: pointer; font-weight: 900; transition: transform .13s ease, box-shadow .13s ease; }
 .card:first-child { margin-left: 0; }
 .card:hover, .card:focus-visible { transform: translateY(-8px); z-index: 2; outline: none; }
@@ -255,5 +256,5 @@ h3 { font: 600 28px Georgia, serif; }
   .table-panel { padding: 18px 12px; }
   .table-center { border-radius: 22px; }
   .button-row { justify-content: center; }
-  .hand { justify-content: flex-start; }
+  .hand-track { justify-content: flex-start; }
 }

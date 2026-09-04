@@ -134,7 +134,7 @@ defmodule DoudizhuWeb.GameLiveTest do
     assert has_element?(view, "#game-panel[data-audio-player-ids]")
     assert has_element?(view, "#phase-title", "Call the landlord")
     assert has_element?(view, "#table-panel[phx-hook='CardSelection']")
-    assert has_element?(view, "#hand .card[data-card-id]")
+    assert has_element?(view, "#hand .hand-track .card[data-card-id]")
     refute has_element?(view, "#hand .card[phx-click]")
 
     view

@@ -380,7 +380,9 @@
             </span>
           </div>
           <div id="hand" class="hand" aria-label={gettext("Your cards")}>
-            <.card :for={card <- cards} card_id={card} />
+            <div class="hand-track">
+              <.card :for={card <- cards} card_id={card} />
+            </div>
           </div>
 
           <% bidding_turn? = game["phase"] == "bidding" && game["current_bidder"] == @identity_id %>
