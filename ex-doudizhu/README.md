@@ -45,17 +45,43 @@ curl http://localhost:4000/api/health
 
 ## Production deployment
 
-The Hetzner deployment uses GitHub only as the source remote; compilation runs natively on the server with persistent Mix caches and no external build service. Each deployment fetches an exact commit, assembles an immutable OTP release, runs migrations, atomically switches the active release, restarts systemd, and verifies its health. Failed builds leave the running release untouched, while failed health checks restore the previous release.
+Production runs on Hetzner at <https://77-42-90-207.sslip.io>. GitHub stores the source, but all builds run natively on the server—there is no external build service or container runtime.
 
-From a clean, committed working tree, deploy with:
+From a clean, committed working tree:
 
 ```sh
 scripts/deploy
 ```
 
-The script runs `mix precommit`, pushes the current commit to `origin/main`, and asks the server to deploy that exact revision. Use `scripts/deploy --skip-tests` only when checks have already passed. Connection settings can be overridden with `DEPLOY_SSH_HOST`, `DEPLOY_SSH_USER`, `DEPLOY_SSH_KEY`, and `DEPLOY_PUBLIC_URL`.
+The script:
 
-The checked-in operational files are under [`deploy/`](deploy/). Production secrets remain only in `/opt/chill-game/shared/doudizhu.env` on the server and must never be committed.
+1. runs `mix precommit`;
+2. pushes the current commit to `origin/main`;
+3. asks Hetzner to fetch that exact commit;
+4. reuses the server's `deps/` and `_build/prod/` caches;
+5. builds an immutable OTP release and runs migrations;
+6. switches the active release, restarts systemd, and checks `/api/health`.
+
+A failed build leaves the current release running; a failed health check rolls it back. Use `scripts/deploy --skip-tests` only when checks already passed.
+
+Server paths:
+
+```text
+/opt/chill-game/build/              cached Git checkout and Mix build
+/opt/chill-game/releases/<commit>/  immutable releases
+/opt/chill-game/current             active release symlink
+/opt/chill-game/shared/doudizhu.env production secrets
+```
+
+Useful checks:
+
+```sh
+curl https://77-42-90-207.sslip.io/api/health
+ssh -i ~/.ssh/js-hetzner deploy@77.42.90.207 \
+  'systemctl status doudizhu --no-pager'
+```
+
+Operational files are under [`deploy/`](deploy/). Override local connection settings with `DEPLOY_SSH_HOST`, `DEPLOY_SSH_USER`, `DEPLOY_SSH_KEY`, or `DEPLOY_PUBLIC_URL`. Never commit the production environment file.
 
 ## Browser UI
 
