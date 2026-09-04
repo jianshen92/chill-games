@@ -36,7 +36,6 @@ defmodule DoudizhuWeb.GameLive do
         game_id: nil,
         actor: nil,
         snapshot: nil,
-        selected: MapSet.new(),
         pending_version: nil,
         replay_games: [],
         replay: nil,
@@ -46,9 +45,7 @@ defmodule DoudizhuWeb.GameLive do
         welcome_error: nil,
         room_error: nil,
         game_error: nil,
-        replay_error: nil,
-        toast: nil,
-        toast_token: nil
+        replay_error: nil
       )
       |> stream(:events, [])
 
@@ -128,23 +125,6 @@ defmodule DoudizhuWeb.GameLive do
     end
   end
 
-  def handle_event("toggle-card", %{"card" => card_id}, socket) do
-    held_cards = get_in(socket.assigns.snapshot || %{}, ["you", "hand"]) || []
-
-    selected =
-      if card_id in held_cards do
-        toggle_member(socket.assigns.selected, card_id)
-      else
-        socket.assigns.selected
-      end
-
-    {:noreply, assign(socket, :selected, selected)}
-  end
-
-  def handle_event("clear-selection", _params, socket) do
-    {:noreply, assign(socket, :selected, MapSet.new())}
-  end
-
   def handle_event("place-bid", %{"bid" => bid}, socket) when bid in ~w(1 2 3) do
     dispatch_action(socket, %{"type" => "place_bid", "bid" => String.to_integer(bid)})
   end
@@ -157,11 +137,12 @@ defmodule DoudizhuWeb.GameLive do
     dispatch_action(socket, %{"type" => "auction_pass"})
   end
 
+  def handle_event("play-selected", %{"cards" => cards}, socket) when is_list(cards) do
+    dispatch_action(socket, %{"type" => "play_cards", "cards" => cards})
+  end
+
   def handle_event("play-selected", _params, socket) do
-    dispatch_action(socket, %{
-      "type" => "play_cards",
-      "cards" => MapSet.to_list(socket.assigns.selected)
-    })
+    {:noreply, put_game_error(socket, "invalid_combination")}
   end
 
   def handle_event("play-pass", _params, socket) do
@@ -204,19 +185,6 @@ defmodule DoudizhuWeb.GameLive do
 
   def handle_event("exit-replay", _params, socket) do
     {:noreply, push_patch(stop_replay(socket), to: ~p"/?history=1")}
-  end
-
-  def handle_event("copied", %{"kind" => kind}, socket) do
-    message =
-      if kind == "replay",
-        do: gettext("Public replay link copied"),
-        else: gettext("Invitation link copied")
-
-    {:noreply, show_toast(socket, message)}
-  end
-
-  def handle_event("copy-failed", _params, socket) do
-    {:noreply, show_toast(socket, gettext("Could not copy the link"))}
   end
 
   @impl true
@@ -269,11 +237,6 @@ defmodule DoudizhuWeb.GameLive do
 
   def handle_info({:advance_replay, _stale_token}, socket), do: {:noreply, socket}
 
-  def handle_info({:hide_toast, token}, %{assigns: %{toast_token: token}} = socket) do
-    {:noreply, assign(socket, toast: nil, toast_token: nil)}
-  end
-
-  def handle_info({:hide_toast, _stale_token}, socket), do: {:noreply, socket}
   def handle_info(_message, socket), do: {:noreply, socket}
 
   defp create_room(socket, player) do
@@ -383,7 +346,6 @@ defmodule DoudizhuWeb.GameLive do
           game_id: game_id,
           actor: actor,
           snapshot: snapshot,
-          selected: MapSet.new(),
           pending_version: nil,
           game_error: nil
         )
@@ -422,7 +384,6 @@ defmodule DoudizhuWeb.GameLive do
         {:noreply,
          assign(socket,
            pending_version: expected_version + 1,
-           selected: MapSet.new(),
            game_error: nil
          )}
 
@@ -439,11 +400,8 @@ defmodule DoudizhuWeb.GameLive do
     current_sequence = get_in(socket.assigns.snapshot || %{}, ["sequence"])
 
     if is_nil(current_sequence) or snapshot["sequence"] >= current_sequence do
-      held = MapSet.new(get_in(snapshot, ["you", "hand"]) || [])
-
       assign(socket,
         snapshot: snapshot,
-        selected: MapSet.intersection(socket.assigns.selected, held),
         pending_version: nil,
         game_error: nil
       )
@@ -486,8 +444,7 @@ defmodule DoudizhuWeb.GameLive do
         replay: replay,
         replay_frame: frame,
         replay_error: nil,
-        snapshot: frame["snapshot"],
-        selected: MapSet.new()
+        snapshot: frame["snapshot"]
       )
       |> reset_events(frame["history"])
     else
@@ -513,7 +470,6 @@ defmodule DoudizhuWeb.GameLive do
         |> assign(
           replay_frame: frame,
           snapshot: frame["snapshot"],
-          selected: MapSet.new(),
           replay_error: nil,
           game_error: nil
         )
@@ -537,7 +493,6 @@ defmodule DoudizhuWeb.GameLive do
       room: nil,
       game_id: nil,
       snapshot: nil,
-      selected: MapSet.new(),
       pending_version: nil,
       replay: nil,
       replay_frame: nil,
@@ -598,12 +553,6 @@ defmodule DoudizhuWeb.GameLive do
     assign(socket, replay_playing: false, replay_token: nil)
   end
 
-  defp show_toast(socket, message) do
-    token = make_ref()
-    Process.send_after(self(), {:hide_toast, token}, 2_400)
-    assign(socket, toast: message, toast_token: token)
-  end
-
   defp put_room_error(socket, reason),
     do: assign(socket, :room_error, GameLiveHTML.error_message(reason))
 
@@ -626,10 +575,6 @@ defmodule DoudizhuWeb.GameLive do
 
   defp own_seat(room, identity_id) do
     Enum.find(room["seats"], &(&1["player_id"] == identity_id))
-  end
-
-  defp toggle_member(set, value) do
-    if MapSet.member?(set, value), do: MapSet.delete(set, value), else: MapSet.put(set, value)
   end
 
   defp random_id(prefix) do

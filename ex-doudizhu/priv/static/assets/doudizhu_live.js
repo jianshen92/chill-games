@@ -3,14 +3,28 @@
 
   Hooks.Clipboard = {
     mounted() {
+      this.showToast = (message, error = false) => {
+        const toast = document.getElementById("clipboard-toast");
+        if (!toast) return;
+
+        window.clearTimeout(toast.hideTimer);
+        toast.textContent = message;
+        toast.classList.toggle("error", error);
+        toast.hidden = false;
+        toast.hideTimer = window.setTimeout(() => {
+          toast.hidden = true;
+          toast.classList.remove("error");
+        }, 2400);
+      };
+
       this.copy = async () => {
         try {
           const value = this.el.dataset.copy || "";
           const text = value.startsWith("/") ? new URL(value, window.location.origin).toString() : value;
           await navigator.clipboard.writeText(text);
-          this.pushEvent("copied", {kind: this.el.dataset.copyKind});
+          this.showToast(this.el.dataset.copySuccess || "Copied");
         } catch (_error) {
-          this.pushEvent("copy-failed", {});
+          this.showToast(this.el.dataset.copyFailure || "Could not copy", true);
         }
       };
 
@@ -19,6 +33,112 @@
 
     destroyed() {
       this.el.removeEventListener("click", this.copy);
+    },
+  };
+
+  Hooks.CardSelection = {
+    mounted() {
+      this.selected = new Set();
+      this.submitting = false;
+
+      this.click = (event) => {
+        const card = event.target.closest("[data-card-id]");
+        if (card && this.el.contains(card) && !card.disabled) {
+          const cardId = card.dataset.cardId;
+          if (this.selected.has(cardId)) this.selected.delete(cardId);
+          else this.selected.add(cardId);
+          this.renderSelection();
+          return;
+        }
+
+        const clear = event.target.closest("[data-card-selection-clear]");
+        if (clear && this.el.contains(clear) && !clear.disabled) {
+          this.selected.clear();
+          this.renderSelection();
+          return;
+        }
+
+        const play = event.target.closest("[data-card-selection-play]");
+        if (play && this.el.contains(play) && !play.disabled) {
+          this.submitting = true;
+          this.renderSelection();
+          this.pushEvent("play-selected", {cards: Array.from(this.selected)}, () => {
+            this.submitting = false;
+            this.renderSelection();
+          });
+        }
+      };
+
+      this.el.addEventListener("click", this.click);
+      this.reconcileSelection();
+    },
+
+    updated() {
+      this.reconcileSelection();
+    },
+
+    destroyed() {
+      this.el.removeEventListener("click", this.click);
+    },
+
+    reconcileSelection() {
+      const heldCardIds = new Set(
+        Array.from(this.el.querySelectorAll("[data-card-id]"), (card) => card.dataset.cardId),
+      );
+      for (const cardId of this.selected) {
+        if (!heldCardIds.has(cardId)) this.selected.delete(cardId);
+      }
+      this.renderSelection();
+    },
+
+    renderSelection() {
+      for (const card of this.el.querySelectorAll("[data-card-id]")) {
+        const selected = this.selected.has(card.dataset.cardId);
+        card.classList.toggle("selected", selected);
+        card.setAttribute("aria-pressed", String(selected));
+      }
+
+      const count = this.el.querySelector("#selection-count");
+      if (count) count.textContent = count.textContent.replace(/\d+/, String(this.selected.size));
+
+      const play = this.el.querySelector("[data-card-selection-play]");
+      const pending = play?.dataset.pending === "true";
+      if (play) play.disabled = pending || this.submitting || this.selected.size === 0;
+
+      const clear = this.el.querySelector("[data-card-selection-clear]");
+      if (clear) clear.disabled = pending || this.submitting || this.selected.size === 0;
+    },
+  };
+
+  Hooks.ReplaySeek = {
+    mounted() {
+      this.committedValue = this.el.querySelector("input[name='index']")?.value;
+      this.input = (event) => {
+        if (event.target.name !== "index") return;
+        const position = document.getElementById("replay-position");
+        if (position) {
+          position.textContent = position.textContent.replace(
+            /\d+/,
+            String(Number(event.target.value) + 1),
+          );
+        }
+      };
+      this.change = (event) => {
+        if (event.target.name !== "index" || event.target.value === this.committedValue) return;
+        this.committedValue = event.target.value;
+        this.pushEvent("seek-replay", {index: event.target.value});
+      };
+      this.el.addEventListener("input", this.input);
+      this.el.addEventListener("change", this.change);
+    },
+
+    updated() {
+      this.committedValue = this.el.querySelector("input[name='index']")?.value;
+    },
+
+    destroyed() {
+      this.el.removeEventListener("input", this.input);
+      this.el.removeEventListener("change", this.change);
     },
   };
 

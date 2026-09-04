@@ -91,6 +91,11 @@ defmodule DoudizhuWeb.GameLiveTest do
     assert has_element?(view, "#seat-list", "Alice")
     assert has_element?(view, "#invite-code")
 
+    assert has_element?(
+             view,
+             "#copy-invite-button[data-copy-success][data-copy-failure]"
+           )
+
     view |> element("#ready-button") |> render_click()
     _html = render(view)
 
@@ -128,7 +133,9 @@ defmodule DoudizhuWeb.GameLiveTest do
     assert has_element?(view, "#game-panel")
     assert has_element?(view, "#game-panel[data-audio-player-ids]")
     assert has_element?(view, "#phase-title", "Call the landlord")
-    assert has_element?(view, "#hand .card")
+    assert has_element?(view, "#table-panel[phx-hook='CardSelection']")
+    assert has_element?(view, "#hand .card[data-card-id]")
+    refute has_element?(view, "#hand .card[phx-click]")
 
     view
     |> element("#bid-controls button[phx-value-bid='3']")
@@ -148,12 +155,8 @@ defmodule DoudizhuWeb.GameLiveTest do
       |> Card.to_id()
 
     view
-    |> element("#hand .card[phx-value-card='#{card_id}']")
-    |> render_click()
-
-    view
-    |> element("#play-controls button[phx-click='play-selected']")
-    |> render_click()
+    |> element("#table-panel")
+    |> render_hook("play-selected", %{"cards" => [card_id]})
 
     _html = render(view)
     assert GameServer.game(game_id).version == 3
@@ -216,6 +219,8 @@ defmodule DoudizhuWeb.GameLiveTest do
     assert has_element?(view, "#replay-controls")
     assert has_element?(view, "#replay-hands .replay-hand")
     assert has_element?(view, "#replay-position", "Step 1 of 4")
+    assert has_element?(view, "#replay-seek-form[phx-hook='ReplaySeek']")
+    refute has_element?(view, "#replay-seek-form[phx-change]")
 
     view |> element("button[phx-click='next-replay-frame']") |> render_click()
     assert has_element?(view, "#replay-position", "Step 2 of 4")

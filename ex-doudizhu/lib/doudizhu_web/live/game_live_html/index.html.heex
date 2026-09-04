@@ -74,7 +74,8 @@
         type="button"
         phx-hook="Clipboard"
         data-copy={~p"/?room=#{@room_id}&invite=#{@invite_code}"}
-        data-copy-kind="invite"
+        data-copy-success={gettext("Invitation link copied")}
+        data-copy-failure={gettext("Could not copy the link")}
       >
         {gettext("Copy invite link")}
       </button>
@@ -211,7 +212,11 @@
       data-audio-manifest="/audio/gameplay/manifest.json"
       data-audio-player-ids={Jason.encode!(Enum.map(players, & &1["player_id"]))}
     >
-      <section class="panel table-panel">
+      <section
+        id="table-panel"
+        class="panel table-panel"
+        phx-hook={if replaying?, do: nil, else: "CardSelection"}
+      >
         <div class="game-header">
           <div>
             <p class="eyebrow">{gettext("Game in progress")}</p>
@@ -250,7 +255,8 @@
             type="button"
             phx-hook="Clipboard"
             data-copy={~p"/?replay=#{@replay.metadata["public_replay_id"]}"}
-            data-copy-kind="replay"
+            data-copy-success={gettext("Public replay link copied")}
+            data-copy-failure={gettext("Could not copy the link")}
           >
             {gettext("Copy link")}
           </button>
@@ -277,7 +283,7 @@
           >
             →
           </button>
-          <form id="replay-seek-form" phx-change="seek-replay">
+          <form id="replay-seek-form" phx-hook="ReplaySeek">
             <input
               id="replay-slider"
               name="index"
@@ -286,7 +292,6 @@
               max={max(0, frame_count - 1)}
               value={frame_index}
               aria-label={gettext("Replay position")}
-              phx-debounce="100"
             />
           </form>
           <strong id="replay-position">{replay_step(frame_index, frame_count)}</strong>
@@ -371,15 +376,11 @@
               <strong id="hand-count">{card_count(length(cards))}</strong>
             </div>
             <span id="selection-count" class="muted">
-              {selected_count(MapSet.size(@selected))}
+              {selected_count(0)}
             </span>
           </div>
           <div id="hand" class="hand" aria-label={gettext("Your cards")}>
-            <.card
-              :for={card <- cards}
-              card_id={card}
-              selected={MapSet.member?(@selected, card)}
-            />
+            <.card :for={card <- cards} card_id={card} />
           </div>
 
           <% bidding_turn? = game["phase"] == "bidding" && game["current_bidder"] == @identity_id %>
@@ -410,8 +411,9 @@
               <button
                 class="button accent"
                 type="button"
-                phx-click="play-selected"
-                disabled={pending? || MapSet.size(@selected) == 0}
+                data-card-selection-play
+                data-pending={to_string(pending?)}
+                disabled
               >
                 {gettext("Play selected")}
               </button>
@@ -426,8 +428,8 @@
               <button
                 class="button ghost"
                 type="button"
-                phx-click="clear-selection"
-                disabled={pending? || MapSet.size(@selected) == 0}
+                data-card-selection-clear
+                disabled
               >
                 {gettext("Clear")}
               </button>
@@ -484,5 +486,5 @@
     </section>
   <% end %>
 
-  <div :if={@toast} id="toast" class="toast" role="status">{@toast}</div>
+  <div id="clipboard-toast" class="toast" role="status" aria-live="polite" hidden></div>
 </Layouts.app>

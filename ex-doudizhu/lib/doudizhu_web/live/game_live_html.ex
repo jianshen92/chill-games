@@ -6,7 +6,6 @@ defmodule DoudizhuWeb.GameLiveHTML do
   embed_templates "game_live_html/*"
 
   attr :card_id, :string, required: true
-  attr :selected, :boolean, default: false
   attr :disabled, :boolean, default: false
 
   def card(assigns) do
@@ -14,18 +13,17 @@ defmodule DoudizhuWeb.GameLiveHTML do
 
     ~H"""
     <button
+      id={"card-#{@card_id}"}
       type="button"
       class={[
         "card",
         @card.red && "red",
-        @card.joker && "joker",
-        @selected && "selected"
+        @card.joker && "joker"
       ]}
       aria-label={@card.label}
-      aria-pressed={to_string(@selected)}
+      aria-pressed="false"
       disabled={@disabled}
-      phx-click="toggle-card"
-      phx-value-card={@card_id}
+      data-card-id={@card_id}
     >
       <span class="rank">{@card.rank}</span>
       <span class="suit">{@card.suit}</span>

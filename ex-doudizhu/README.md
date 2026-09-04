@@ -89,7 +89,7 @@ Open [`http://localhost:4000`](http://localhost:4000), enter your name, and crea
 
 For local testing on one computer, use separate browser profiles/private contexts so each player has separate guest identity storage.
 
-The browser is a Phoenix LiveView adapter over the same application boundary as the Channel and local clients. It constructs the same protocol-v1 command envelopes, dispatches through `CommandGateway`, subscribes to the same audience-specific projections, and does not classify cards or decide whether moves are legal. LiveView owns transient presentation state such as selected cards and replay playback; the durable game remains authoritative.
+The browser is a Phoenix LiveView adapter over the same application boundary as the Channel and local clients. It constructs the same protocol-v1 command envelopes, dispatches through `CommandGateway`, subscribes to the same audience-specific projections, and does not classify cards or decide whether moves are legal. Browser hooks own latency-sensitive presentation state such as card selection and clipboard feedback; LiveView receives selected cards only when the player submits a play. The durable game remains authoritative.
 
 Use the language selector in the header to switch between English and Simplified Chinese. The preference is saved in a browser cookie, while an explicit `?locale=zh_Hans` query or the browser's `Accept-Language` header can select the initial locale. UI translations use Phoenix Gettext and live under `priv/gettext/`; after changing translatable source strings, run `mix gettext.extract --merge` and update the locale PO files.
 
