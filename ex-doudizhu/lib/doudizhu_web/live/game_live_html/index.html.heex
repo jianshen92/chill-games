@@ -204,7 +204,13 @@
     <% players = snapshot["players"] %>
     <% you = snapshot["you"] %>
     <% replaying? = @mode == :replay %>
-    <section id="game-panel" class="game-layout">
+    <section
+      id="game-panel"
+      class="game-layout"
+      phx-hook="GameAudio"
+      data-audio-manifest="/audio/gameplay/manifest.json"
+      data-audio-player-ids={Jason.encode!(Enum.map(players, & &1["player_id"]))}
+    >
       <section class="panel table-panel">
         <div class="game-header">
           <div>

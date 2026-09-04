@@ -53,6 +53,14 @@ The browser is a Phoenix LiveView adapter over the same application boundary as 
 
 Use the language selector in the header to switch between English and Simplified Chinese. The preference is saved in a browser cookie, while an explicit `?locale=zh_Hans` query or the browser's `Accept-Language` header can select the initial locale. UI translations use Phoenix Gettext and live under `priv/gettext/`; after changing translatable source strings, run `mix gettext.extract --merge` and update the locale PO files.
 
+### Gameplay voice pack
+
+Live games announce bids, passes, and played combinations with three Mandarin Qwen3-TTS personas: Serena, Ethan, and Xiaowan. Ethan is the male persona; Xiaowan uses Qwen's `Seren` speaker. Its data-driven dictionary is [`priv/static/audio/gameplay/manifest.json`](priv/static/audio/gameplay/manifest.json), with 69 cues per persona (207 MP3 files) covering every projected combination family and all rank-specific singles, pairs, triples, and bombs. All voices play at the pack-level rate of 1.3× while preserving pitch. Single cards announce only their rank, such as “三”, “勾”, “圈”, or “小王”.
+
+The manifest assigns persona IDs to the three seats in stable table order and gives each persona an independent clip base path and generation metadata. LiveView supplies the ordered player IDs from the existing snapshot and forwards each projected game event unchanged. The generic browser hook combines the event's `player_id` with the manifest assignment, then recursively follows `select` and `variants` to resolve the cue. Game rules and server command handling therefore know nothing about voices, filenames, or Mandarin phrases. Change the assignment list to swap personas between players, or replace a persona directory and its metadata to install another voice.
+
+[`scripts/generate_gameplay_audio.py`](scripts/generate_gameplay_audio.py) regenerates missing persona clips from the manifest using its Qwen speaker values; it requires `gradio_client` and `ffmpeg`. Existing files are resumable by default, while `--force` replaces them. Browsers may defer playback until the player has interacted with the page because of autoplay policies.
+
 ### Replaying a recorded game
 
 From the home screen, click **Replay a game**. Games associated with the guest identity stored in that browser are listed newest first, and any completed game can be opened directly with its public game ID. Replay links use `/?replay=<game_id>`.

@@ -90,7 +90,7 @@ msgid "%{side} won"
 msgstr "%{side}获胜"
 
 #: lib/doudizhu_web/live/game_live_html.ex:137
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:441
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:447
 #, elixir-autogen, elixir-format
 msgid "A player"
 msgstr "一名玩家"
@@ -110,7 +110,7 @@ msgstr "飞机带对"
 msgid "Airplane with singles"
 msgstr "飞机带单"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:311
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:317
 #, elixir-autogen, elixir-format
 msgid "All player hands"
 msgstr "所有玩家的手牌"
@@ -140,7 +140,7 @@ msgstr "大王"
 msgid "Bomb"
 msgstr "炸弹"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:350
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:356
 #, elixir-autogen, elixir-format
 msgid "Bottom cards"
 msgstr "底牌"
@@ -160,7 +160,7 @@ msgstr "叫地主。"
 msgid "Cards dealt. %{player} starts the auction."
 msgstr "发牌完成。%{player} 先叫地主。"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:426
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:432
 #, elixir-autogen, elixir-format
 msgid "Clear"
 msgstr "清除"
@@ -190,7 +190,7 @@ msgstr "连对"
 msgid "Copy invite link"
 msgstr "复制邀请链接"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:249
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:255
 #, elixir-autogen, elixir-format
 msgid "Copy link"
 msgstr "复制链接"
@@ -215,7 +215,7 @@ msgstr "创建私人牌桌"
 msgid "Creating…"
 msgstr "正在创建…"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:334
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:340
 #, elixir-autogen, elixir-format
 msgid "Current lead"
 msgstr "当前出牌"
@@ -240,7 +240,7 @@ msgstr "所有人都准备好了。"
 msgid "Everyone passed. The deal was voided."
 msgstr "所有人都不叫，本局作废。"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:239
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:245
 #, elixir-autogen, elixir-format
 msgid "Exit replay"
 msgstr "退出回放"
@@ -275,7 +275,7 @@ msgstr "牌局 ID：%{game_id}"
 msgid "Game complete"
 msgstr "牌局结束"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:438
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:444
 #, elixir-autogen, elixir-format
 msgid "Game finished"
 msgstr "牌局结束"
@@ -285,13 +285,13 @@ msgstr "牌局结束"
 msgid "Game finished: %{side} win."
 msgstr "牌局结束：%{side}获胜。"
 
-#: lib/doudizhu_web/live/game_live.ex:376
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:211
+#: lib/doudizhu_web/live/game_live.ex:381
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:217
 #, elixir-autogen, elixir-format
 msgid "Game in progress"
 msgstr "牌局进行中"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:463
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:469
 #, elixir-autogen, elixir-format
 msgid "Game log"
 msgstr "牌局记录"
@@ -316,7 +316,7 @@ msgstr "还没轮到你。"
 msgid "I’m ready"
 msgstr "我准备好了"
 
-#: lib/doudizhu_web/live/game_live.ex:324
+#: lib/doudizhu_web/live/game_live.ex:329
 #: lib/doudizhu_web/live/game_live_html/index.html.heex:47
 #, elixir-autogen, elixir-format
 msgid "Join table"
@@ -328,7 +328,7 @@ msgid "Joining…"
 msgstr "正在加入…"
 
 #: lib/doudizhu_web/live/game_live_html.ex:83
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:300
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:306
 #, elixir-autogen, elixir-format
 msgid "Landlord"
 msgstr "地主"
@@ -349,17 +349,17 @@ msgstr "本轮出牌已结束。由 %{player} 重新领出。"
 msgid "Names may contain at most 30 characters."
 msgstr "名字最多可包含 30 个字符。"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:268
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:274
 #, elixir-autogen, elixir-format
 msgid "Next replay frame"
 msgstr "下一回放帧"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:322
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:328
 #, elixir-autogen, elixir-format
 msgid "No cards"
 msgstr "没有牌"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:342
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:348
 #, elixir-autogen, elixir-format
 msgid "No cards led"
 msgstr "尚未出牌"
@@ -369,7 +369,7 @@ msgstr "尚未出牌"
 msgid "No recorded games were found for this guest identity."
 msgstr "此访客身份没有找到已记录的牌局。"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:353
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:359
 #, elixir-autogen, elixir-format
 msgid "Not dealt"
 msgstr "尚未发牌"
@@ -414,12 +414,12 @@ msgstr "智胜好友。"
 msgid "Pair"
 msgstr "对子"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:262
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:268
 #, elixir-autogen, elixir-format
 msgid "Pause"
 msgstr "暂停"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:410
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:416
 #, elixir-autogen, elixir-format
 msgid "Play selected"
 msgstr "打出所选牌"
@@ -429,12 +429,12 @@ msgstr "打出所选牌"
 msgid "Players"
 msgstr "玩家"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:254
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:260
 #, elixir-autogen, elixir-format
 msgid "Previous replay frame"
 msgstr "上一回放帧"
 
-#: lib/doudizhu_web/live/game_live.ex:337
+#: lib/doudizhu_web/live/game_live.ex:342
 #: lib/doudizhu_web/live/game_live_html/index.html.heex:60
 #, elixir-autogen, elixir-format
 msgid "Private table"
@@ -460,8 +460,8 @@ msgstr "已准备"
 msgid "Reconnecting…"
 msgstr "正在重新连接…"
 
-#: lib/doudizhu_web/live/game_live.ex:456
-#: lib/doudizhu_web/live/game_live.ex:492
+#: lib/doudizhu_web/live/game_live.ex:461
+#: lib/doudizhu_web/live/game_live.ex:497
 #: lib/doudizhu_web/live/game_live_html/index.html.heex:148
 #, elixir-autogen, elixir-format
 msgid "Recorded games"
@@ -477,7 +477,7 @@ msgstr "已记录的状态"
 msgid "Recorded turn: %{player}"
 msgstr "记录回合：%{player}"
 
-#: lib/doudizhu_web/live/game_live.ex:478
+#: lib/doudizhu_web/live/game_live.ex:483
 #, elixir-autogen, elixir-format
 msgid "Replay"
 msgstr "回放"
@@ -487,17 +487,17 @@ msgstr "回放"
 msgid "Replay a game"
 msgstr "回放牌局"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:282
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:288
 #, elixir-autogen, elixir-format
 msgid "Replay position"
 msgstr "回放位置"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:213
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:219
 #, elixir-autogen, elixir-format
 msgid "Replay · "
 msgstr "回放 · "
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:230
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:236
 #, elixir-autogen, elixir-format
 msgid "Resync"
 msgstr "重新同步"
@@ -547,7 +547,7 @@ msgstr "第 %{current} 步，共 %{count} 步"
 msgid "Straight"
 msgstr "顺子"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:462
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:468
 #, elixir-autogen, elixir-format
 msgid "Table activity"
 msgstr "牌桌动态"
@@ -638,7 +638,7 @@ msgstr "三带一对"
 msgid "Triple with single"
 msgstr "三带一"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:221
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:227
 #, elixir-autogen, elixir-format
 msgid "Turn %{turn}"
 msgstr "回合 %{turn}"
@@ -663,7 +663,7 @@ msgstr "等待中"
 msgid "Waiting for a friend"
 msgstr "等待好友加入"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:430
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:436
 #, elixir-autogen, elixir-format
 msgid "Waiting for another player…"
 msgstr "等待其他玩家…"
@@ -713,12 +713,12 @@ msgstr "你受邀加入一个私人牌桌。"
 msgid "Your bid must exceed the current bid."
 msgstr "你的叫分必须高于当前叫分。"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:371
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:377
 #, elixir-autogen, elixir-format
 msgid "Your cards"
 msgstr "你的手牌"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:364
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:370
 #, elixir-autogen, elixir-format
 msgid "Your hand"
 msgstr "你的手牌"
@@ -753,7 +753,7 @@ msgstr "你的牌局状态已过期。请重新同步后再试。"
 msgid "e.g. Alice"
 msgstr "例如：小明"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:400
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:406
 #, elixir-autogen, elixir-format
 msgctxt "bidding action"
 msgid "Pass"
@@ -765,7 +765,7 @@ msgctxt "game phase"
 msgid "Play"
 msgstr "出牌"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:418
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:424
 #, elixir-autogen, elixir-format
 msgctxt "playing action"
 msgid "Pass"
@@ -783,7 +783,7 @@ msgctxt "readiness status"
 msgid "Not ready"
 msgstr "未准备"
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:263
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:269
 #, elixir-autogen, elixir-format
 msgctxt "replay control"
 msgid "Play"

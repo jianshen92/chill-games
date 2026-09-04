@@ -1,0 +1,376 @@
+{
+  "schema_version": 2,
+  "pack": {
+    "id": "mandarin-qwen3-three-personas",
+    "language": "zh-Hans",
+    "description": "Three Mandarin Qwen3-TTS personas assigned to players in table order.",
+    "volume": 1.0,
+    "playback_rate": 1.3,
+    "generation": {
+      "space": "Qwen/Qwen3-TTS-Demo",
+      "api_name": "/tts_interface"
+    }
+  },
+  "player_voice_assignment": {
+    "strategy": "table_order",
+    "personas": [
+      "serena",
+      "ethan",
+      "xiaowan"
+    ],
+    "fallback": "serena"
+  },
+  "personas": {
+    "serena": {
+      "display_name": "Serena",
+      "base_path": "personas/serena",
+      "volume": 1.0,
+      "generation": {
+        "engine": "Qwen3-TTS",
+        "model": "qwen3-tts-flash-2025-11-27",
+        "speaker": "Serena",
+        "language": "Chinese",
+        "codec": "MP3 mono 48 kHz 160 kbps"
+      }
+    },
+    "ethan": {
+      "display_name": "Ethan",
+      "base_path": "personas/ethan",
+      "volume": 1.0,
+      "generation": {
+        "engine": "Qwen3-TTS",
+        "model": "qwen3-tts-flash-2025-11-27",
+        "speaker": "Ethan",
+        "language": "Chinese",
+        "codec": "MP3 mono 48 kHz 160 kbps"
+      }
+    },
+    "xiaowan": {
+      "display_name": "Xiaowan",
+      "base_path": "personas/xiaowan",
+      "volume": 1.0,
+      "generation": {
+        "engine": "Qwen3-TTS",
+        "model": "qwen3-tts-flash-2025-11-27",
+        "speaker": "Seren",
+        "language": "Chinese",
+        "codec": "MP3 mono 48 kHz 160 kbps"
+      }
+    }
+  },
+  "events": {
+    "auction_passed": {
+      "file": "auction-pass.mp3",
+      "text": "不叫！"
+    },
+    "bid_placed": {
+      "select": "bid",
+      "variants": {
+        "1": {
+          "file": "bid-1.mp3",
+          "text": "一分！"
+        },
+        "2": {
+          "file": "bid-2.mp3",
+          "text": "两分！"
+        },
+        "3": {
+          "file": "bid-3.mp3",
+          "text": "三分！"
+        }
+      }
+    },
+    "turn_passed": {
+      "file": "play-pass.mp3",
+      "text": "不要！"
+    },
+    "cards_played": {
+      "select": "combination.type",
+      "variants": {
+        "single": {
+          "select": "combination.main_rank",
+          "variants": {
+            "3": {
+              "file": "single-3.mp3",
+              "text": "三！"
+            },
+            "4": {
+              "file": "single-4.mp3",
+              "text": "四！"
+            },
+            "5": {
+              "file": "single-5.mp3",
+              "text": "五！"
+            },
+            "6": {
+              "file": "single-6.mp3",
+              "text": "六！"
+            },
+            "7": {
+              "file": "single-7.mp3",
+              "text": "七！"
+            },
+            "8": {
+              "file": "single-8.mp3",
+              "text": "八！"
+            },
+            "9": {
+              "file": "single-9.mp3",
+              "text": "九！"
+            },
+            "10": {
+              "file": "single-10.mp3",
+              "text": "十！"
+            },
+            "J": {
+              "file": "single-j.mp3",
+              "text": "勾！"
+            },
+            "Q": {
+              "file": "single-q.mp3",
+              "text": "圈！"
+            },
+            "K": {
+              "file": "single-k.mp3",
+              "text": "K！"
+            },
+            "A": {
+              "file": "single-a.mp3",
+              "text": "A！"
+            },
+            "2": {
+              "file": "single-2.mp3",
+              "text": "二！"
+            },
+            "small_joker": {
+              "file": "single-small_joker.mp3",
+              "text": "小王！"
+            },
+            "big_joker": {
+              "file": "single-big_joker.mp3",
+              "text": "大王！"
+            }
+          }
+        },
+        "pair": {
+          "select": "combination.main_rank",
+          "variants": {
+            "3": {
+              "file": "pair-3.mp3",
+              "text": "对三！"
+            },
+            "4": {
+              "file": "pair-4.mp3",
+              "text": "对四！"
+            },
+            "5": {
+              "file": "pair-5.mp3",
+              "text": "对五！"
+            },
+            "6": {
+              "file": "pair-6.mp3",
+              "text": "对六！"
+            },
+            "7": {
+              "file": "pair-7.mp3",
+              "text": "对七！"
+            },
+            "8": {
+              "file": "pair-8.mp3",
+              "text": "对八！"
+            },
+            "9": {
+              "file": "pair-9.mp3",
+              "text": "对九！"
+            },
+            "10": {
+              "file": "pair-10.mp3",
+              "text": "对十！"
+            },
+            "J": {
+              "file": "pair-j.mp3",
+              "text": "对勾！"
+            },
+            "Q": {
+              "file": "pair-q.mp3",
+              "text": "对圈！"
+            },
+            "K": {
+              "file": "pair-k.mp3",
+              "text": "对K！"
+            },
+            "A": {
+              "file": "pair-a.mp3",
+              "text": "对A！"
+            },
+            "2": {
+              "file": "pair-2.mp3",
+              "text": "对二！"
+            }
+          }
+        },
+        "triple": {
+          "select": "combination.main_rank",
+          "variants": {
+            "3": {
+              "file": "triple-3.mp3",
+              "text": "三个三！"
+            },
+            "4": {
+              "file": "triple-4.mp3",
+              "text": "三个四！"
+            },
+            "5": {
+              "file": "triple-5.mp3",
+              "text": "三个五！"
+            },
+            "6": {
+              "file": "triple-6.mp3",
+              "text": "三个六！"
+            },
+            "7": {
+              "file": "triple-7.mp3",
+              "text": "三个七！"
+            },
+            "8": {
+              "file": "triple-8.mp3",
+              "text": "三个八！"
+            },
+            "9": {
+              "file": "triple-9.mp3",
+              "text": "三个九！"
+            },
+            "10": {
+              "file": "triple-10.mp3",
+              "text": "三个十！"
+            },
+            "J": {
+              "file": "triple-j.mp3",
+              "text": "三个勾！"
+            },
+            "Q": {
+              "file": "triple-q.mp3",
+              "text": "三个圈！"
+            },
+            "K": {
+              "file": "triple-k.mp3",
+              "text": "三个K！"
+            },
+            "A": {
+              "file": "triple-a.mp3",
+              "text": "三个A！"
+            },
+            "2": {
+              "file": "triple-2.mp3",
+              "text": "三个二！"
+            }
+          }
+        },
+        "triple_with_single": {
+          "file": "triple-with-single.mp3",
+          "text": "三带一！"
+        },
+        "triple_with_pair": {
+          "file": "triple-with-pair.mp3",
+          "text": "三带一对！"
+        },
+        "straight": {
+          "file": "straight.mp3",
+          "text": "顺子！"
+        },
+        "consecutive_pairs": {
+          "file": "consecutive-pairs.mp3",
+          "text": "连对！"
+        },
+        "airplane": {
+          "file": "airplane.mp3",
+          "text": "飞机！"
+        },
+        "airplane_with_singles": {
+          "file": "airplane-with-singles.mp3",
+          "text": "飞机带单！"
+        },
+        "airplane_with_pairs": {
+          "file": "airplane-with-pairs.mp3",
+          "text": "飞机带对子！",
+          "post_processing": {
+            "compress_silence": {
+              "threshold_db": -35,
+              "minimum_duration_ms": 60,
+              "retained_duration_ms": 30
+            }
+          }
+        },
+        "four_with_singles": {
+          "file": "four-with-singles.mp3",
+          "text": "四带二！"
+        },
+        "four_with_pairs": {
+          "file": "four-with-pairs.mp3",
+          "text": "四带两对！"
+        },
+        "bomb": {
+          "select": "combination.main_rank",
+          "variants": {
+            "3": {
+              "file": "bomb-3.mp3",
+              "text": "三炸！"
+            },
+            "4": {
+              "file": "bomb-4.mp3",
+              "text": "四炸！"
+            },
+            "5": {
+              "file": "bomb-5.mp3",
+              "text": "五炸！"
+            },
+            "6": {
+              "file": "bomb-6.mp3",
+              "text": "六炸！"
+            },
+            "7": {
+              "file": "bomb-7.mp3",
+              "text": "七炸！"
+            },
+            "8": {
+              "file": "bomb-8.mp3",
+              "text": "八炸！"
+            },
+            "9": {
+              "file": "bomb-9.mp3",
+              "text": "九炸！"
+            },
+            "10": {
+              "file": "bomb-10.mp3",
+              "text": "十炸！"
+            },
+            "J": {
+              "file": "bomb-j.mp3",
+              "text": "勾炸！"
+            },
+            "Q": {
+              "file": "bomb-q.mp3",
+              "text": "圈炸！"
+            },
+            "K": {
+              "file": "bomb-k.mp3",
+              "text": "K炸！"
+            },
+            "A": {
+              "file": "bomb-a.mp3",
+              "text": "A炸！"
+            },
+            "2": {
+              "file": "bomb-2.mp3",
+              "text": "二炸！"
+            }
+          }
+        },
+        "rocket": {
+          "file": "rocket.mp3",
+          "text": "王炸！"
+        }
+      }
+    }
+  }
+}

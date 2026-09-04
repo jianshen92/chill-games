@@ -1,0 +1,8 @@
+# Local experiments and generated audition material
+/agent-tournament/
+/voice-auditions/
+
+# OS and Python tooling artifacts
+.DS_Store
+__pycache__/
+*.py[cod]

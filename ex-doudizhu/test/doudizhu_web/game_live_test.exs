@@ -126,17 +126,42 @@ defmodule DoudizhuWeb.GameLiveTest do
     {:ok, view, _html} = live(conn, ~p"/?room=#{room.id}&invite=#{invite_code}")
 
     assert has_element?(view, "#game-panel")
+    assert has_element?(view, "#game-panel[data-audio-player-ids]")
     assert has_element?(view, "#phase-title", "Call the landlord")
     assert has_element?(view, "#hand .card")
 
     view
-    |> element("#bid-controls button[phx-value-bid='1']")
+    |> element("#bid-controls button[phx-value-bid='3']")
     |> render_click()
 
     _html = render(view)
     assert GameServer.game(game_id).version == 2
     assert has_element?(view, "#version-label", "Turn 2")
-    assert has_element?(view, "#event-log", "Alice bid 1.")
+    assert has_element?(view, "#event-log", "Alice bid 3.")
+    assert_push_event view, "game-audio", %{event: %{"type" => "bid_placed", "bid" => 3}}
+
+    card_id =
+      game_id
+      |> GameServer.game()
+      |> hand_cards(first_id())
+      |> List.first()
+      |> Card.to_id()
+
+    view
+    |> element("#hand .card[phx-value-card='#{card_id}']")
+    |> render_click()
+
+    view
+    |> element("#play-controls button[phx-click='play-selected']")
+    |> render_click()
+
+    _html = render(view)
+    assert GameServer.game(game_id).version == 3
+    assert has_element?(view, "#version-label", "Turn 3")
+
+    assert_push_event view, "game-audio", %{
+      event: %{"type" => "cards_played", "combination" => %{"type" => "single"}}
+    }
   end
 
   test "LiveView provides reactive completed-game replay controls", %{conn: conn} do
@@ -215,6 +240,22 @@ defmodule DoudizhuWeb.GameLiveTest do
       Phoenix.ConnTest.build_conn() |> get("/vendor/phoenix_live_view/phoenix_live_view.min.js")
 
     assert response(conn, 200) =~ "LiveView"
+  end
+
+  test "gameplay audio manifest and clips are served", %{conn: conn} do
+    conn = get(conn, "/audio/gameplay/manifest.json")
+    manifest = json_response(conn, 200)
+
+    assert manifest["pack"]["id"] == "mandarin-qwen3-three-personas"
+    assert manifest["player_voice_assignment"]["personas"] == ~w(serena ethan xiaowan)
+    assert manifest["events"]["cards_played"]["variants"]["rocket"]["text"] == "王炸！"
+
+    conn =
+      Phoenix.ConnTest.build_conn()
+      |> get("/audio/gameplay/personas/serena/rocket.mp3")
+
+    assert byte_size(response(conn, 200)) > 100
+    assert get_resp_header(conn, "content-type") == ["audio/mpeg"]
   end
 
   test "POST /api/guest-session returns a signed opaque identity", %{conn: conn} do

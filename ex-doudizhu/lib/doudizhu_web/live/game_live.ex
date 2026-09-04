@@ -238,12 +238,17 @@ defmodule DoudizhuWeb.GameLive do
 
   def handle_info({:game_message, %{"kind" => "game_event"} = message}, socket) do
     if socket.assigns.mode == :game do
+      event = message["event"]
+
       entry = %{
         id: "event-#{message["sequence"]}-#{System.unique_integer([:positive])}",
-        event: message["event"]
+        event: event
       }
 
-      {:noreply, stream_insert(socket, :events, entry, at: -1, limit: -80)}
+      {:noreply,
+       socket
+       |> stream_insert(:events, entry, at: -1, limit: -80)
+       |> push_event("game-audio", %{event: event})}
     else
       {:noreply, socket}
     end

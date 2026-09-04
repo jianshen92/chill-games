@@ -93,7 +93,7 @@ msgid "%{side} won"
 msgstr ""
 
 #: lib/doudizhu_web/live/game_live_html.ex:137
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:441
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:447
 #, elixir-autogen, elixir-format
 msgid "A player"
 msgstr ""
@@ -113,7 +113,7 @@ msgstr ""
 msgid "Airplane with singles"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:311
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:317
 #, elixir-autogen, elixir-format
 msgid "All player hands"
 msgstr ""
@@ -143,7 +143,7 @@ msgstr ""
 msgid "Bomb"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:350
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:356
 #, elixir-autogen, elixir-format
 msgid "Bottom cards"
 msgstr ""
@@ -163,7 +163,7 @@ msgstr ""
 msgid "Cards dealt. %{player} starts the auction."
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:426
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:432
 #, elixir-autogen, elixir-format
 msgid "Clear"
 msgstr ""
@@ -193,7 +193,7 @@ msgstr ""
 msgid "Copy invite link"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:249
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:255
 #, elixir-autogen, elixir-format
 msgid "Copy link"
 msgstr ""
@@ -218,7 +218,7 @@ msgstr ""
 msgid "Creating…"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:334
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:340
 #, elixir-autogen, elixir-format
 msgid "Current lead"
 msgstr ""
@@ -243,7 +243,7 @@ msgstr ""
 msgid "Everyone passed. The deal was voided."
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:239
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:245
 #, elixir-autogen, elixir-format
 msgid "Exit replay"
 msgstr ""
@@ -278,7 +278,7 @@ msgstr ""
 msgid "Game complete"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:438
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:444
 #, elixir-autogen, elixir-format
 msgid "Game finished"
 msgstr ""
@@ -288,13 +288,13 @@ msgstr ""
 msgid "Game finished: %{side} win."
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live.ex:376
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:211
+#: lib/doudizhu_web/live/game_live.ex:381
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:217
 #, elixir-autogen, elixir-format
 msgid "Game in progress"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:463
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:469
 #, elixir-autogen, elixir-format
 msgid "Game log"
 msgstr ""
@@ -319,7 +319,7 @@ msgstr ""
 msgid "I’m ready"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live.ex:324
+#: lib/doudizhu_web/live/game_live.ex:329
 #: lib/doudizhu_web/live/game_live_html/index.html.heex:47
 #, elixir-autogen, elixir-format
 msgid "Join table"
@@ -331,7 +331,7 @@ msgid "Joining…"
 msgstr ""
 
 #: lib/doudizhu_web/live/game_live_html.ex:83
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:300
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:306
 #, elixir-autogen, elixir-format
 msgid "Landlord"
 msgstr ""
@@ -352,17 +352,17 @@ msgstr ""
 msgid "Names may contain at most 30 characters."
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:268
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:274
 #, elixir-autogen, elixir-format
 msgid "Next replay frame"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:322
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:328
 #, elixir-autogen, elixir-format
 msgid "No cards"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:342
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:348
 #, elixir-autogen, elixir-format
 msgid "No cards led"
 msgstr ""
@@ -372,7 +372,7 @@ msgstr ""
 msgid "No recorded games were found for this guest identity."
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:353
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:359
 #, elixir-autogen, elixir-format
 msgid "Not dealt"
 msgstr ""
@@ -417,12 +417,12 @@ msgstr ""
 msgid "Pair"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:262
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:268
 #, elixir-autogen, elixir-format
 msgid "Pause"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:410
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:416
 #, elixir-autogen, elixir-format
 msgid "Play selected"
 msgstr ""
@@ -432,12 +432,12 @@ msgstr ""
 msgid "Players"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:254
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:260
 #, elixir-autogen, elixir-format
 msgid "Previous replay frame"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live.ex:337
+#: lib/doudizhu_web/live/game_live.ex:342
 #: lib/doudizhu_web/live/game_live_html/index.html.heex:60
 #, elixir-autogen, elixir-format
 msgid "Private table"
@@ -463,8 +463,8 @@ msgstr ""
 msgid "Reconnecting…"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live.ex:456
-#: lib/doudizhu_web/live/game_live.ex:492
+#: lib/doudizhu_web/live/game_live.ex:461
+#: lib/doudizhu_web/live/game_live.ex:497
 #: lib/doudizhu_web/live/game_live_html/index.html.heex:148
 #, elixir-autogen, elixir-format
 msgid "Recorded games"
@@ -480,7 +480,7 @@ msgstr ""
 msgid "Recorded turn: %{player}"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live.ex:478
+#: lib/doudizhu_web/live/game_live.ex:483
 #, elixir-autogen, elixir-format
 msgid "Replay"
 msgstr ""
@@ -490,17 +490,17 @@ msgstr ""
 msgid "Replay a game"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:282
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:288
 #, elixir-autogen, elixir-format
 msgid "Replay position"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:213
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:219
 #, elixir-autogen, elixir-format
 msgid "Replay · "
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:230
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:236
 #, elixir-autogen, elixir-format
 msgid "Resync"
 msgstr ""
@@ -550,7 +550,7 @@ msgstr ""
 msgid "Straight"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:462
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:468
 #, elixir-autogen, elixir-format
 msgid "Table activity"
 msgstr ""
@@ -641,7 +641,7 @@ msgstr ""
 msgid "Triple with single"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:221
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:227
 #, elixir-autogen, elixir-format
 msgid "Turn %{turn}"
 msgstr ""
@@ -666,7 +666,7 @@ msgstr ""
 msgid "Waiting for a friend"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:430
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:436
 #, elixir-autogen, elixir-format
 msgid "Waiting for another player…"
 msgstr ""
@@ -716,12 +716,12 @@ msgstr ""
 msgid "Your bid must exceed the current bid."
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:371
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:377
 #, elixir-autogen, elixir-format
 msgid "Your cards"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:364
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:370
 #, elixir-autogen, elixir-format
 msgid "Your hand"
 msgstr ""
@@ -756,7 +756,7 @@ msgstr ""
 msgid "e.g. Alice"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:400
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:406
 #, elixir-autogen, elixir-format
 msgctxt "bidding action"
 msgid "Pass"
@@ -768,7 +768,7 @@ msgctxt "game phase"
 msgid "Play"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:418
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:424
 #, elixir-autogen, elixir-format
 msgctxt "playing action"
 msgid "Pass"
@@ -786,7 +786,7 @@ msgctxt "readiness status"
 msgid "Not ready"
 msgstr ""
 
-#: lib/doudizhu_web/live/game_live_html/index.html.heex:263
+#: lib/doudizhu_web/live/game_live_html/index.html.heex:269
 #, elixir-autogen, elixir-format
 msgctxt "replay control"
 msgid "Play"
