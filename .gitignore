@@ -2,6 +2,11 @@
 /agent-tournament/
 /voice-auditions/
 
+# Local secrets
+.env
+.env.*
+!.env.example
+
 # OS and Python tooling artifacts
 .DS_Store
 __pycache__/
