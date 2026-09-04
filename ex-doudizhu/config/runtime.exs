@@ -55,16 +55,24 @@ if config_env() == :prod do
 
   host = System.get_env("PHX_HOST") || "example.com"
 
+  bind_ip =
+    System.get_env("PHX_BIND_IP", "::")
+    |> String.to_charlist()
+    |> then(fn address ->
+      case :inet.parse_address(address) do
+        {:ok, parsed} -> parsed
+        {:error, reason} -> raise "invalid PHX_BIND_IP: #{inspect(reason)}"
+      end
+    end)
+
   config :doudizhu, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
 
   config :doudizhu, DoudizhuWeb.Endpoint,
     url: [host: host, port: 443, scheme: "https"],
     http: [
-      # Enable IPv6 and bind on all interfaces.
-      # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
-      # See the documentation on https://bandit.hexdocs.pm/Bandit.html#t:options/0
-      # for details about using IPv6 vs IPv4 and loopback vs public addresses.
-      ip: {0, 0, 0, 0, 0, 0, 0, 0}
+      # Defaults to all IPv4/IPv6 interfaces. Set PHX_BIND_IP=127.0.0.1 when
+      # running behind a reverse proxy on the same host.
+      ip: bind_ip
     ],
     secret_key_base: secret_key_base
 

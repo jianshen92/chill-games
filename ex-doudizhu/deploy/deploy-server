@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
+export LANG=C.UTF-8
+export LC_ALL=C.UTF-8
+
 revision=${1:-}
 if [[ ! "$revision" =~ ^[0-9a-f]{40}$ ]]; then
   echo "usage: deploy-server <40-character-git-revision>" >&2
@@ -19,6 +22,13 @@ exec 9>"$lock_file"
 if ! flock -n 9; then
   echo "another deployment is already running" >&2
   exit 1
+fi
+
+if [[ -f "$root/deployed-revision" ]] &&
+  [[ "$(cat "$root/deployed-revision")" == "$revision" ]] &&
+  systemctl is-active --quiet doudizhu.service; then
+  echo "$revision is already deployed"
+  exit 0
 fi
 
 started_at=$SECONDS
@@ -54,6 +64,10 @@ phase "incremental application compilation"
 mix compile
 
 phase "assembling immutable release"
+if [[ -L "$root/current" && "$(readlink -f "$root/current")" == "$release" ]]; then
+  echo "refusing to overwrite the active release" >&2
+  exit 1
+fi
 rm -rf "$release"
 mix release --no-compile --path "$release"
 
@@ -77,7 +91,7 @@ sudo systemctl restart doudizhu.service
 
 healthy=false
 for _attempt in {1..30}; do
-  if curl --silent --show-error --fail --max-time 2 \
+  if curl --silent --fail --max-time 2 \
     http://127.0.0.1:4000/api/health >/dev/null; then
     healthy=true
     break
